@@ -7,7 +7,7 @@ type Connection = {
 const connection: Connection = {};
 
 async function dbConnect(): Promise<void> {
-  if (connection.isConnected == 1) {
+  if (connection.isConnected === 1) {
     console.log("Already connected");
     return;
   }
@@ -22,7 +22,7 @@ async function dbConnect(): Promise<void> {
     connection.isConnected = db.connections[0].readyState;
     console.log("Db Connection successful");
   } catch (error: any) {
-    console.log("Db connection failed", error.message);
+    console.error("Db connection failed", error.message);
     throw new Error("Failed to connect to database");
   }
 }
