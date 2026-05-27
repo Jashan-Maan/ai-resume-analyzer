@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
-import dbConnect from "./lib/dbConnect";
-import User from "./models/User";
+import dbConnect from "@/lib/dbConnect";
+import User from "@/models/User";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
