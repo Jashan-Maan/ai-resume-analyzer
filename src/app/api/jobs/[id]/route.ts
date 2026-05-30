@@ -1,4 +1,3 @@
-// src/app/api/jobs/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import dbConnect from "@/lib/dbConnect";
@@ -8,8 +7,10 @@ import { updateJobSchema } from "@/schemas/JobSchema";
 // PUT — update job
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
+
   try {
     const session = await auth();
     if (!session) {
@@ -33,9 +34,9 @@ export async function PUT(
 
     // Find job AND verify it belongs to this user
     const job = await Job.findOneAndUpdate(
-      { _id: params.id, userId: session.user.id }, // security check
+      { _id: id, userId: session.user.id },
       result.data,
-      { new: true }, // return updated document
+      { new: true },
     );
 
     if (!job) {
@@ -47,6 +48,7 @@ export async function PUT(
 
     return NextResponse.json({ success: true, data: job });
   } catch (error) {
+    console.error("PUT /api/jobs error:", error);
     return NextResponse.json(
       { success: false, message: "Server error" },
       { status: 500 },
@@ -56,9 +58,10 @@ export async function PUT(
 
 // DELETE — delete job
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } },
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   try {
     const session = await auth();
     if (!session) {
@@ -72,7 +75,7 @@ export async function DELETE(
 
     // Find AND verify ownership before deleting
     const job = await Job.findOneAndDelete({
-      _id: params.id,
+      _id: id,
       userId: session.user.id, // security check
     });
 
@@ -85,6 +88,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: "Job deleted" });
   } catch (error) {
+    console.error("DELETE /api/jobs error:", error);
     return NextResponse.json(
       { success: false, message: "Server error" },
       { status: 500 },

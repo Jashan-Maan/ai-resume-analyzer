@@ -19,10 +19,11 @@ export async function GET() {
 
     const jobs = await Job.find({ userId: session.user.id }).sort({
       createdAt: -1,
-    }); // newest first
+    });
 
     return NextResponse.json({ success: true, data: jobs });
   } catch (error) {
+    console.error("GET /api/jobs error:", error);
     return NextResponse.json(
       { success: false, message: "Server error" },
       { status: 500 },
@@ -65,6 +66,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, data: job }, { status: 201 });
   } catch (error) {
+    console.error("POST /api/jobs error:", error);
     return NextResponse.json(
       { success: false, message: "Server error" },
       { status: 500 },
