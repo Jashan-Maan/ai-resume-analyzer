@@ -4,7 +4,7 @@ if (!process.env.GEMINI_API_KEY) {
   throw new Error("GEMINI_API_KEY is not defined in .env");
 }
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Resume Analysis — Gemini 2.5 Flash (fast)
 export async function analyzeResume(
