@@ -79,3 +79,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }
+
+// Add this to same file below POST
+export async function GET() {
+  try {
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    await dbConnect();
+
+    const analyses = await Analysis.find({ userId: session.user.id })
+      .sort({ createdAt: -1 })
+      .limit(10); // last 10 analyses
+
+    return NextResponse.json({ success: true, data: analyses });
+
+  } catch (error) {
+    console.error("GET /api/analyze error:", error);
+    return NextResponse.json(
+      { success: false, message: "Server error" },
+      { status: 500 }
+    );
+  }
+}
