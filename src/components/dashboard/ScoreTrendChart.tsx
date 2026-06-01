@@ -1,0 +1,63 @@
+"use client";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { format } from "date-fns";
+
+interface ScoreTrendProps {
+  analyses: {
+    atsScore: number;
+    createdAt: string;
+  }[];
+}
+
+export default function ScoreTrendChart({ analyses }: ScoreTrendProps) {
+  if (analyses.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-48 text-gray-400 text-sm">
+        No analyses yet
+      </div>
+    );
+  }
+
+  const data = analyses
+    .slice()
+    .reverse() // oldest first
+    .map((a, i) => ({
+      name: `Analysis ${i + 1}`,
+      score: a.atsScore,
+      date: format(new Date(a.createdAt), "MMM dd"),
+    }));
+
+  return (
+    <ResponsiveContainer width="100%" height={220}>
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+        <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#9ca3af" }} />
+        <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "#9ca3af" }} />
+        <Tooltip
+          formatter={(value: number) => [`${value}/100`, "ATS Score"]}
+          contentStyle={{
+            borderRadius: "8px",
+            border: "1px solid #e5e7eb",
+            fontSize: "12px",
+          }}
+        />
+        <Line
+          type="monotone"
+          dataKey="score"
+          stroke="#7c3aed"
+          strokeWidth={2.5}
+          dot={{ fill: "#7c3aed", r: 4 }}
+          activeDot={{ r: 6 }}
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  );
+}

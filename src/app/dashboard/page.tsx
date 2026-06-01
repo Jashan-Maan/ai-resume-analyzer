@@ -1,6 +1,12 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import dbConnect from "@/lib/dbConnect";
+import Job from "@/models/Job";
+import Analysis from "@/models/Analysis";
 import StatsCard from "@/components/dashboard/StatsCard";
+import StatusChart from "@/components/dashboard/StatusChart";
+import ScoreTrendChart from "@/components/dashboard/ScoreTrendChart";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Users, XCircle, Trophy } from "lucide-react";
 import Link from "next/link";
 
@@ -8,42 +14,26 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const firstName = session.user?.name?.split(" ")[0];
+  await dbConnect();
 
-  const stats = [
-    {
-      label: "Applications Applied",
-      value: 0,
-      icon: FileText,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
-      trend: "+0% from last month",
-    },
-    {
-      label: "Interviews",
-      value: 0,
-      icon: Users,
-      color: "text-green-600",
-      bg: "bg-green-50",
-      trend: "+0% from last month",
-    },
-    {
-      label: "Rejected",
-      value: 0,
-      icon: XCircle,
-      color: "text-orange-600",
-      bg: "bg-orange-50",
-      trend: "+0% from last month",
-    },
-    {
-      label: "Offers",
-      value: 0,
-      icon: Trophy,
-      color: "text-violet-600",
-      bg: "bg-violet-50",
-      trend: "+0% from last month",
-    },
-  ];
+  // Fetch real data
+  const [jobs, analyses] = await Promise.all([
+    Job.find({ userId: session.user.id }),
+    Analysis.find({ userId: session.user.id })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .lean(),
+  ]);
+
+  // Calculate stats
+  const stats = {
+    applied: jobs.filter((j) => j.status === "applied").length,
+    interview: jobs.filter((j) => j.status === "interview").length,
+    offer: jobs.filter((j) => j.status === "offer").length,
+    rejected: jobs.filter((j) => j.status === "rejected").length,
+  };
+
+  const firstName = session.user?.name?.split(" ")[0];
 
   return (
     <div className="space-y-6">
@@ -52,8 +42,7 @@ export default async function DashboardPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-500 text-sm mt-1">
-            Welcome back, {firstName}! Here's what's happening with your career
-            journey.
+            Welcome back, {firstName}! Here's your career journey.
           </p>
         </div>
         <Link
@@ -66,27 +55,97 @@ export default async function DashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat) => (
+        {[
+          {
+            label: "Applications Applied",
+            value: jobs.length,
+            icon: FileText,
+            color: "text-blue-600",
+            bg: "bg-blue-50",
+            trend: `${stats.applied} active`,
+          },
+          {
+            label: "Interviews",
+            value: stats.interview,
+            icon: Users,
+            color: "text-green-600",
+            bg: "bg-green-50",
+            trend:
+              jobs.length > 0
+                ? `${Math.round((stats.interview / jobs.length) * 100)}% response rate`
+                : "No data yet",
+          },
+          {
+            label: "Rejected",
+            value: stats.rejected,
+            icon: XCircle,
+            color: "text-orange-600",
+            bg: "bg-orange-50",
+            trend: "Keep applying!",
+          },
+          {
+            label: "Offers",
+            value: stats.offer,
+            icon: Trophy,
+            color: "text-violet-600",
+            bg: "bg-violet-50",
+            trend: stats.offer > 0 ? "🎉 Congratulations!" : "Keep going!",
+          },
+        ].map((stat) => (
           <StatsCard key={stat.label} {...stat} />
         ))}
       </div>
 
-      {/* Empty State */}
-      <div className="bg-white rounded-xl border p-12 text-center">
-        <p className="text-5xl mb-4">📄</p>
-        <h3 className="font-semibold text-gray-800 mb-2 text-lg">
-          No analyses yet
-        </h3>
-        <p className="text-gray-500 text-sm mb-6">
-          Upload your resume to get an AI-powered ATS score and suggestions
-        </p>
-        <Link
-          href="/dashboard/analyze"
-          className="bg-violet-600 text-white px-6 py-2.5 rounded-lg text-sm hover:bg-violet-700 transition inline-block"
-        >
-          Analyze Your Resume
-        </Link>
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Donut Chart */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-gray-800">
+              Application Status Overview
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <StatusChart data={stats} />
+          </CardContent>
+        </Card>
+
+        {/* Line Chart */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-gray-800">
+              ATS Score Trend
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScoreTrendChart
+              analyses={analyses.map((a) => ({
+                atsScore: a.atsScore,
+                createdAt: a.createdAt.toString(),
+              }))}
+            />
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Empty state if no data */}
+      {jobs.length === 0 && analyses.length === 0 && (
+        <div className="bg-white rounded-xl border p-12 text-center">
+          <p className="text-4xl mb-4">📄</p>
+          <h3 className="font-semibold text-gray-800 mb-2">
+            Start your journey
+          </h3>
+          <p className="text-gray-500 text-sm mb-6">
+            Analyze your resume or add job applications to see insights
+          </p>
+          <Link
+            href="/dashboard/analyze"
+            className="bg-violet-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-violet-700 transition inline-block"
+          >
+            Analyze Your Resume
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
