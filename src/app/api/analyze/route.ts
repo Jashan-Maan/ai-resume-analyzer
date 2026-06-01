@@ -87,7 +87,7 @@ export async function GET() {
     if (!session) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -98,12 +98,11 @@ export async function GET() {
       .limit(10); // last 10 analyses
 
     return NextResponse.json({ success: true, data: analyses });
-
   } catch (error) {
     console.error("GET /api/analyze error:", error);
     return NextResponse.json(
       { success: false, message: "Server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
