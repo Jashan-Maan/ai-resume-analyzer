@@ -4,7 +4,7 @@ export const createJobSchema = z.object({
   company: z.string().min(1, "Company name is required").trim(),
   role: z.string().min(1, { message: "Role is required" }).trim(),
   status: z
-    .enum(["applied", "interview", "offer", "reject"])
+    .enum(["applied", "interview", "offer", "rejected"])
     .default("applied"),
   jobDescription: z.string().min(1, { message: "Job Description is required" }),
   notes: z.string().optional(),
