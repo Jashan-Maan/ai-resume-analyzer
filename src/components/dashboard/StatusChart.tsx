@@ -54,18 +54,29 @@ export default function StatusChart({ data }: StatusChartProps) {
           outerRadius={90}
           paddingAngle={3}
           dataKey="value"
+          strokeWidth={0}
         >
           {chartData.map((entry, index) => (
             <Cell key={index} fill={entry.color} />
           ))}
         </Pie>
         <Tooltip
-          formatter={(value: number, name: string) =>
-            [`${value} (${Math.round((value / total) * 100)}%)`, name] as [
-              string,
-              string,
-            ]
-          }
+          cursor={{ stroke: "transparent" }}
+          content={({ active, payload }) => {
+            if (active && payload && payload.length) {
+              const item = payload[0];
+              return (
+                <div className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs shadow-sm">
+                  <p className="font-medium text-gray-700">{item.name}</p>
+                  <p className="text-gray-500">
+                    {item.value} (
+                    {Math.round(((item.value as number) / total) * 100)}%)
+                  </p>
+                </div>
+              );
+            }
+            return null;
+          }}
         />
         <Legend />
       </PieChart>

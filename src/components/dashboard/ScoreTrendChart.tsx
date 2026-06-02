@@ -42,11 +42,18 @@ export default function ScoreTrendChart({ analyses }: ScoreTrendProps) {
         <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#9ca3af" }} />
         <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "#9ca3af" }} />
         <Tooltip
-          formatter={(value: number) => [`${value}/100`, "ATS Score"]}
-          contentStyle={{
-            borderRadius: "8px",
-            border: "1px solid #e5e7eb",
-            fontSize: "12px",
+          content={({ active, payload, label }) => {
+            if (active && payload && payload.length) {
+              return (
+                <div className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs shadow-sm">
+                  <p className="text-gray-500 mb-1">{label}</p>
+                  <p className="font-semibold text-violet-600">
+                    {payload[0].value}/100
+                  </p>
+                </div>
+              );
+            }
+            return null;
           }}
         />
         <Line
