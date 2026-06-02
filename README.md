@@ -1,5 +1,3 @@
-<![CDATA[<div align="center">
-
 # ✦ KIRA — AI Resume Analyzer
 
 **Optimize your resume. Ace the ATS. Land the interview.**
@@ -13,8 +11,6 @@ with actionable improvement suggestions — all in seconds.
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?logo=mongodb)](https://www.mongodb.com/atlas)
 [![Gemini](https://img.shields.io/badge/Google-Gemini_AI-4285F4?logo=google)](https://ai.google.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
-
-</div>
 
 ---
 
@@ -268,8 +264,7 @@ NEXTAUTH_URL=http://localhost:3000
 GEMINI_API_KEY=your_gemini_api_key
 ```
 
-<details>
-<summary><strong>📌 Setting Up OAuth Providers (step-by-step)</strong></summary>
+**📌 Setting Up OAuth Providers (step-by-step)**
 
 #### Google OAuth
 
@@ -294,8 +289,6 @@ GEMINI_API_KEY=your_gemini_api_key
 1. Go to [Google AI Studio](https://aistudio.google.com/apikey)
 2. Click **Create API Key**
 3. Copy the key into your `.env` as `GEMINI_API_KEY`
-
-</details>
 
 ### Running the Development Server
 
@@ -471,7 +464,7 @@ KIRA uses [NextAuth.js v5 (Auth.js)](https://authjs.dev/) with the **JWT strateg
 
 - **Providers:** Google OAuth 2.0 and GitHub OAuth
 - **Session handling:** JWT tokens stored in HTTP-only cookies (no database sessions)
-- **Middleware:** The [middleware.ts](middleware.ts) file intercepts requests:
+- **Middleware:** The `middleware.ts` file intercepts requests:
   - `/dashboard/*` routes → redirect to `/login` if unauthenticated
   - `/login` → redirect to `/dashboard` if already authenticated
 - **User provisioning:** On first sign-in, a new `User` document is created in MongoDB automatically
@@ -537,9 +530,4 @@ This project is open-source and available under the [MIT License](LICENSE).
 
 ---
 
-<div align="center">
-
 **Built with ❤️ by [Jashan Maan](https://github.com/Jashan-Maan)**
-
-</div>
-]]>
