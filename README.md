@@ -37,6 +37,7 @@ with actionable improvement suggestions — all in seconds.
 ## ✨ Features
 
 ### 🔍 AI Resume Analysis
+
 - Upload your resume as a PDF (up to 4 MB)
 - Optionally paste a target job description for tailored analysis
 - Receive an **ATS compatibility score (0–100)** powered by Gemini 2.5 Flash
@@ -45,24 +46,28 @@ with actionable improvement suggestions — all in seconds.
 - Resume section detection (experience, education, skills, projects, summary)
 
 ### 📊 Analytics Dashboard
+
 - Overview cards: total applications, interviews, rejections, and offers
 - **Application status donut chart** (Recharts)
 - **ATS score trend line chart** tracking your progress over time
 - Quick-access stats: total analyses, average score, best score
 
 ### 📝 Job Application Tracker
+
 - Full CRUD for job applications (company, role, status, job description, notes)
 - Status management: `Applied` → `Interview` → `Offer` / `Rejected`
 - Sortable table with status badges and inline actions (edit, delete)
 - Zod-validated input on both client and server
 
 ### 🔐 Authentication
+
 - OAuth sign-in via **Google** and **GitHub** (NextAuth.js v5)
 - JWT-based sessions — no server-side session store required
 - Middleware-protected routes: unauthenticated users are redirected to `/login`
 - Automatic user provisioning on first sign-in
 
 ### 📄 Analysis History
+
 - Browse all past analyses with expandable detail cards
 - Summary stats (total analyses, average ATS score, best score)
 - Sorted by most recent, with analysis number badges
@@ -71,21 +76,21 @@ with actionable improvement suggestions — all in seconds.
 
 ## 🛠 Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Framework** | [Next.js 16](https://nextjs.org/) (App Router, React Server Components) |
-| **Language** | [TypeScript 5](https://www.typescriptlang.org/) |
-| **Styling** | [Tailwind CSS 4](https://tailwindcss.com/) |
-| **UI Components** | [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/) |
-| **Animations** | [Framer Motion](https://www.framer.com/motion/) |
-| **Charts** | [Recharts](https://recharts.org/) |
-| **Icons** | [Lucide React](https://lucide.dev/) |
-| **Auth** | [NextAuth.js v5](https://authjs.dev/) (Google + GitHub OAuth) |
-| **Database** | [MongoDB Atlas](https://www.mongodb.com/atlas) via [Mongoose 9](https://mongoosejs.com/) |
-| **AI** | [Google Gemini API](https://ai.google.dev/) (2.5 Flash + 2.5 Pro) |
-| **PDF Parsing** | [unpdf](https://github.com/nicolo-ribaudo/unpdf) |
-| **Validation** | [Zod 4](https://zod.dev/) |
-| **Font** | [Geist](https://vercel.com/font) (Sans + Mono) |
+| Layer             | Technology                                                                               |
+| ----------------- | ---------------------------------------------------------------------------------------- |
+| **Framework**     | [Next.js 16](https://nextjs.org/) (App Router, React Server Components)                  |
+| **Language**      | [TypeScript 5](https://www.typescriptlang.org/)                                          |
+| **Styling**       | [Tailwind CSS 4](https://tailwindcss.com/)                                               |
+| **UI Components** | [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)              |
+| **Animations**    | [Framer Motion](https://www.framer.com/motion/)                                          |
+| **Charts**        | [Recharts](https://recharts.org/)                                                        |
+| **Icons**         | [Lucide React](https://lucide.dev/)                                                      |
+| **Auth**          | [NextAuth.js v5](https://authjs.dev/) (Google + GitHub OAuth)                            |
+| **Database**      | [MongoDB Atlas](https://www.mongodb.com/atlas) via [Mongoose 9](https://mongoosejs.com/) |
+| **AI**            | [Google Gemini API](https://ai.google.dev/) (2.5 Flash + 2.5 Pro)                        |
+| **PDF Parsing**   | [unpdf](https://github.com/nicolo-ribaudo/unpdf)                                         |
+| **Validation**    | [Zod 4](https://zod.dev/)                                                                |
+| **Font**          | [Geist](https://vercel.com/font) (Sans + Mono)                                           |
 
 ---
 
@@ -214,14 +219,14 @@ ai-resume-analyzer/
 
 ### Prerequisites
 
-| Tool | Version |
-|------|---------|
-| **Node.js** | 18.x or later |
-| **npm** | 9.x or later (or yarn / pnpm / bun) |
-| **MongoDB Atlas** | Free tier (M0) works fine |
-| **Google Cloud Console** | OAuth 2.0 client credentials |
-| **GitHub Developer Settings** | OAuth App credentials |
-| **Google AI Studio** | Gemini API key |
+| Tool                          | Version                             |
+| ----------------------------- | ----------------------------------- |
+| **Node.js**                   | 18.x or later                       |
+| **npm**                       | 9.x or later (or yarn / pnpm / bun) |
+| **MongoDB Atlas**             | Free tier (M0) works fine           |
+| **Google Cloud Console**      | OAuth 2.0 client credentials        |
+| **GitHub Developer Settings** | OAuth App credentials               |
+| **Google AI Studio**          | Gemini API key                      |
 
 ### Installation
 
@@ -298,12 +303,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser. You'll be redirected to the login page.
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server (with hot reload) |
-| `npm run build` | Create optimized production build |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
+| Command         | Description                                |
+| --------------- | ------------------------------------------ |
+| `npm run dev`   | Start development server (with hot reload) |
+| `npm run build` | Create optimized production build          |
+| `npm run start` | Start production server                    |
+| `npm run lint`  | Run ESLint                                 |
 
 ---
 
@@ -317,14 +322,15 @@ All API routes are protected by NextAuth.js session authentication. Unauthorized
 
 Upload a resume PDF for AI-powered analysis.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `resume` | `File` (PDF) | ✅ | Resume file (max 4 MB, PDF only) |
-| `jobDescription` | `string` | ❌ | Target job description for tailored analysis |
+| Parameter        | Type         | Required | Description                                  |
+| ---------------- | ------------ | -------- | -------------------------------------------- |
+| `resume`         | `File` (PDF) | ✅       | Resume file (max 4 MB, PDF only)             |
+| `jobDescription` | `string`     | ❌       | Target job description for tailored analysis |
 
 **Content-Type:** `multipart/form-data`
 
 **Response** `201 Created`:
+
 ```json
 {
   "success": true,
@@ -359,6 +365,7 @@ Upload a resume PDF for AI-powered analysis.
 Fetch the authenticated user's last 10 analyses.
 
 **Response** `200 OK`:
+
 ```json
 {
   "success": true,
@@ -375,6 +382,7 @@ Fetch the authenticated user's last 10 analyses.
 Fetch all job applications for the authenticated user (sorted by most recent).
 
 **Response** `200 OK`:
+
 ```json
 {
   "success": true,
@@ -396,14 +404,14 @@ Fetch all job applications for the authenticated user (sorted by most recent).
 
 Create a new job application. Request body is validated with Zod.
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `company` | `string` | ✅ | Company name |
-| `role` | `string` | ✅ | Job title / role |
-| `status` | `"applied" \| "interview" \| "rejected" \| "offer"` | ❌ | Defaults to `"applied"` |
-| `jobDescription` | `string` | ✅ | Job description text |
-| `note` | `string` | ❌ | Personal notes |
-| `appliedDate` | `Date` | ❌ | Defaults to current date |
+| Field            | Type                                                | Required | Description              |
+| ---------------- | --------------------------------------------------- | -------- | ------------------------ |
+| `company`        | `string`                                            | ✅       | Company name             |
+| `role`           | `string`                                            | ✅       | Job title / role         |
+| `status`         | `"applied" \| "interview" \| "rejected" \| "offer"` | ❌       | Defaults to `"applied"`  |
+| `jobDescription` | `string`                                            | ✅       | Job description text     |
+| `note`           | `string`                                            | ❌       | Personal notes           |
+| `appliedDate`    | `Date`                                              | ❌       | Defaults to current date |
 
 #### `PUT /api/jobs/:id`
 
@@ -419,42 +427,42 @@ Delete a job application. Only the job owner can delete it.
 
 ### User
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | `String` | User's display name |
-| `email` | `String` | Unique, lowercase, validated email |
-| `image` | `String?` | Profile picture URL (from OAuth provider) |
-| `role` | `"user" \| "admin"` | User role (defaults to `"user"`) |
-| `analysisCount` | `Number` | Total analyses performed (auto-incremented) |
-| `createdAt` | `Date` | Auto-generated timestamp |
-| `updatedAt` | `Date` | Auto-generated timestamp |
+| Field           | Type                | Description                                 |
+| --------------- | ------------------- | ------------------------------------------- |
+| `name`          | `String`            | User's display name                         |
+| `email`         | `String`            | Unique, lowercase, validated email          |
+| `image`         | `String?`           | Profile picture URL (from OAuth provider)   |
+| `role`          | `"user" \| "admin"` | User role (defaults to `"user"`)            |
+| `analysisCount` | `Number`            | Total analyses performed (auto-incremented) |
+| `createdAt`     | `Date`              | Auto-generated timestamp                    |
+| `updatedAt`     | `Date`              | Auto-generated timestamp                    |
 
 ### Analysis
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `userId` | `String` | Reference to User |
-| `atsScore` | `Number` | ATS compatibility score (0–100) |
-| `summary` | `String` | 2–3 sentence assessment |
-| `strengths` | `String[]` | List of resume strengths |
-| `weaknesses` | `String[]` | List of resume weaknesses |
-| `missingKeywords` | `String[]` | Keywords missing from resume |
-| `suggestions` | `Array<{priority, suggestion}>` | Prioritized improvement suggestions |
-| `sectionsFound` | `Object` | Boolean flags for detected resume sections |
-| `createdAt` | `Date` | Auto-generated timestamp |
+| Field             | Type                            | Description                                |
+| ----------------- | ------------------------------- | ------------------------------------------ |
+| `userId`          | `String`                        | Reference to User                          |
+| `atsScore`        | `Number`                        | ATS compatibility score (0–100)            |
+| `summary`         | `String`                        | 2–3 sentence assessment                    |
+| `strengths`       | `String[]`                      | List of resume strengths                   |
+| `weaknesses`      | `String[]`                      | List of resume weaknesses                  |
+| `missingKeywords` | `String[]`                      | Keywords missing from resume               |
+| `suggestions`     | `Array<{priority, suggestion}>` | Prioritized improvement suggestions        |
+| `sectionsFound`   | `Object`                        | Boolean flags for detected resume sections |
+| `createdAt`       | `Date`                          | Auto-generated timestamp                   |
 
 ### Job
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `userId` | `String` | Reference to User |
-| `company` | `String` | Company name |
-| `role` | `String` | Job title / role |
-| `status` | `Enum` | `"applied"`, `"interview"`, `"rejected"`, or `"offer"` |
-| `jobDescription` | `String` | Full job description |
-| `note` | `String?` | Optional personal notes |
-| `appliedDate` | `Date` | When the application was submitted |
-| `createdAt` | `Date` | Auto-generated timestamp |
+| Field            | Type      | Description                                            |
+| ---------------- | --------- | ------------------------------------------------------ |
+| `userId`         | `String`  | Reference to User                                      |
+| `company`        | `String`  | Company name                                           |
+| `role`           | `String`  | Job title / role                                       |
+| `status`         | `Enum`    | `"applied"`, `"interview"`, `"rejected"`, or `"offer"` |
+| `jobDescription` | `String`  | Full job description                                   |
+| `note`           | `String?` | Optional personal notes                                |
+| `appliedDate`    | `Date`    | When the application was submitted                     |
+| `createdAt`      | `Date`    | Auto-generated timestamp                               |
 
 ---
 
