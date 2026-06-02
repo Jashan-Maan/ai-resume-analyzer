@@ -13,8 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Resume Analyzer",
-  description: "Analyze your resume with AI",
+  title: "KIRA - AI Resume Analyzer",
+  description: "AI Resume Analyzer",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({
