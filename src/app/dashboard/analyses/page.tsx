@@ -12,9 +12,34 @@ export default async function AnalysesPage() {
 
   await dbConnect();
 
-  const analyses = await Analysis.find({ userId: session.user.id })
+  const rawAnalyses = await Analysis.find({ userId: session.user.id })
     .sort({ createdAt: -1 })
     .lean();
+
+  // ✅ Serialize everything to plain objects
+  const analyses = rawAnalyses.map((a) => ({
+    _id: a._id.toString(),
+    userId: a.userId,
+    atsScore: a.atsScore,
+    summary: a.summary,
+    strengths: a.strengths,
+    weaknesses: a.weaknesses,
+    missingKeywords: a.missingKeywords,
+    suggestions: a.suggestions.map(
+      (s: { priority: string; suggestion: string }) => ({
+        priority: s.priority,
+        suggestion: s.suggestion,
+      }),
+    ),
+    sectionsFound: {
+      experience: a.sectionsFound.experience,
+      education: a.sectionsFound.education,
+      skills: a.sectionsFound.skills,
+      projects: a.sectionsFound.projects,
+      summary: a.sectionsFound.summary,
+    },
+    createdAt: a.createdAt.toISOString(),
+  }));
 
   return (
     <div className="space-y-6">
@@ -89,12 +114,8 @@ export default async function AnalysesPage() {
         <div className="space-y-4">
           {analyses.map((analysis, index) => (
             <AnalysisCard
-              key={analysis._id.toString()}
-              analysis={{
-                ...analysis,
-                _id: analysis._id.toString(),
-                createdAt: analysis.createdAt.toString(),
-              }}
+              key={analysis._id}
+              analysis={analysis}
               index={analyses.length - index}
             />
           ))}
