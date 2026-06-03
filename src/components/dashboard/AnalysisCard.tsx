@@ -130,7 +130,7 @@ export default function AnalysisCard({ analysis, index }: AnalysisCardProps) {
               variant="ghost"
               size="sm"
               onClick={() => setExpanded(!expanded)}
-              className="text-gray-500 hover:text-violet-600"
+              className="text-gray-500 hover:text-sky-blue-600"
             >
               {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
             </Button>

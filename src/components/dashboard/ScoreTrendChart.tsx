@@ -47,7 +47,7 @@ export default function ScoreTrendChart({ analyses }: ScoreTrendProps) {
               return (
                 <div className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs shadow-sm">
                   <p className="text-gray-500 mb-1">{label}</p>
-                  <p className="font-semibold text-violet-600">
+                  <p className="font-semibold text-sky-blue-600">
                     {payload[0].value}/100
                   </p>
                 </div>
@@ -59,9 +59,9 @@ export default function ScoreTrendChart({ analyses }: ScoreTrendProps) {
         <Line
           type="monotone"
           dataKey="score"
-          stroke="#7c3aed"
+          stroke="#007acc"
           strokeWidth={2.5}
-          dot={{ fill: "#7c3aed", r: 4 }}
+          dot={{ fill: "#007acc", r: 4 }}
           activeDot={{ r: 6 }}
         />
       </LineChart>

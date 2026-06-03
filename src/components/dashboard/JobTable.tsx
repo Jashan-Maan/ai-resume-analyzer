@@ -282,7 +282,7 @@ export default function JobTable({
               <Button
                 type="submit"
                 disabled={editLoading}
-                className="flex-1 bg-violet-600 hover:bg-violet-700 text-white"
+                className="flex-1 bg-sky-blue-600 hover:bg-sky-blue-700 text-white"
               >
                 {editLoading ? "Saving..." : "Save Changes"}
               </Button>

@@ -35,7 +35,7 @@ const Sidebar = ({ user }: SidebarProps) => {
     <div className="w-64 bg-white border-r flex flex-col h-full shrink-0">
       {/* Logo */}
       <div className="p-6 border-b">
-        <h1 className="text-xl font-bold text-violet-600">Kira</h1>
+        <h1 className="text-xl font-bold text-sky-blue-600">Kira</h1>
         <p className="text-xs text-gray-400 mt-0.5">AI Resume Analyzer</p>
       </div>
 
@@ -48,12 +48,12 @@ const Sidebar = ({ user }: SidebarProps) => {
               alt="Profile"
               width={40}
               height={40}
-              className="rounded-full ring-2 ring-violet-100"
+              className="rounded-full ring-2 ring-sky-blue-100"
             />
           ) : (
             // Fallback avatar if no image
-            <div className="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center">
-              <span className="text-violet-600 font-semibold text-sm">
+            <div className="w-10 h-10 rounded-full bg-sky-blue-100 flex items-center justify-center">
+              <span className="text-sky-blue-600 font-semibold text-sm">
                 {user.name?.charAt(0).toUpperCase()}
               </span>
             </div>
@@ -78,13 +78,13 @@ const Sidebar = ({ user }: SidebarProps) => {
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all
                 ${
                   isActive
-                    ? "bg-violet-50 text-violet-600 font-medium border border-violet-100"
+                    ? "bg-sky-blue-50 text-sky-blue-600 font-medium border border-sky-blue-100"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 }`}
             >
               <Icon
                 size={18}
-                className={isActive ? "text-violet-600" : "text-gray-400"}
+                className={isActive ? "text-sky-blue-600" : "text-gray-400"}
               />
               {label}
             </Link>

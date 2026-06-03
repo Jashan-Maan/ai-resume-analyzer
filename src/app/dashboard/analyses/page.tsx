@@ -46,8 +46,8 @@ export default async function AnalysesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="bg-violet-50 p-2 rounded-lg">
-            <BarChart2 size={20} className="text-violet-600" />
+          <div className="bg-sky-blue-50 p-2 rounded-lg">
+            <BarChart2 size={20} className="text-sky-blue-600" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">My Analyses</h1>
@@ -59,7 +59,7 @@ export default async function AnalysesPage() {
         </div>
         <Link
           href="/dashboard/analyze"
-          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2"
+          className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2"
         >
           ✦ New Analysis
         </Link>
@@ -69,7 +69,7 @@ export default async function AnalysesPage() {
       {analyses.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white rounded-xl border p-4 text-center">
-            <p className="text-2xl font-bold text-violet-600">
+            <p className="text-2xl font-bold text-sky-blue-600">
               {analyses.length}
             </p>
             <p className="text-sm text-gray-500 mt-1">Total Analyses</p>
@@ -105,7 +105,7 @@ export default async function AnalysesPage() {
           </p>
           <Link
             href="/dashboard/analyze"
-            className="bg-violet-600 text-white px-6 py-2.5 rounded-lg text-sm hover:bg-violet-700 transition inline-block"
+            className="bg-sky-blue-600 text-white px-6 py-2.5 rounded-lg text-sm hover:bg-sky-blue-700 transition inline-block"
           >
             Analyze Your Resume
           </Link>

@@ -18,7 +18,7 @@ export default async function DashboardPage() {
 
   // Fetch real data
   const [jobs, analyses] = await Promise.all([
-    Job.find({ userId: session.user.id }),
+    Job.find({ userId: session.user.id }).lean(),
     Analysis.find({ userId: session.user.id })
       .sort({ createdAt: -1 })
       .limit(10)
@@ -47,7 +47,7 @@ export default async function DashboardPage() {
         </div>
         <Link
           href="/dashboard/analyze"
-          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2"
+          className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2"
         >
           ✦ Analyze Resume
         </Link>
@@ -87,8 +87,8 @@ export default async function DashboardPage() {
             label: "Offers",
             value: stats.offer,
             icon: Trophy,
-            color: "text-violet-600",
-            bg: "bg-violet-50",
+            color: "text-sky-blue-600",
+            bg: "bg-sky-blue-50",
             trend: stats.offer > 0 ? "🎉 Congratulations!" : "Keep going!",
           },
         ].map((stat) => (
@@ -140,7 +140,7 @@ export default async function DashboardPage() {
           </p>
           <Link
             href="/dashboard/analyze"
-            className="bg-violet-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-violet-700 transition inline-block"
+            className="bg-sky-blue-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-sky-blue-700 transition inline-block"
           >
             Analyze Your Resume
           </Link>

@@ -19,7 +19,7 @@ interface StatusChartProps {
 }
 
 const COLORS = {
-  applied: "#6366f1", // violet
+  applied: "#0099ff", // sky-blue-500
   interview: "#f59e0b", // amber
   offer: "#22c55e", // green
   rejected: "#ef4444", // red

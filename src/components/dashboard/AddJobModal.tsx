@@ -78,7 +78,7 @@ export default function AddJobModal({ onJobAdded }: AddJobModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-violet-600 hover:bg-violet-700 text-white gap-2">
+        <Button className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white gap-2">
           <Plus size={16} />
           Add Job
         </Button>
@@ -124,7 +124,7 @@ export default function AddJobModal({ onJobAdded }: AddJobModalProps) {
               name="status"
               value={form.status}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-blue-500"
             >
               <option value="applied">Applied</option>
               <option value="interview">Interview</option>
@@ -156,7 +156,7 @@ export default function AddJobModal({ onJobAdded }: AddJobModalProps) {
               onChange={handleChange}
               rows={3}
               required
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-blue-500 resize-none"
             />
           </div>
 
@@ -188,7 +188,7 @@ export default function AddJobModal({ onJobAdded }: AddJobModalProps) {
             <Button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-violet-600 hover:bg-violet-700 text-white"
+              className="flex-1 bg-sky-blue-600 hover:bg-sky-blue-700 text-white"
             >
               {loading ? "Adding..." : "Add Job"}
             </Button>

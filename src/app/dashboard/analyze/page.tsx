@@ -81,8 +81,8 @@ export default function AnalyzePage() {
     <div className="space-y-6 max-w-4xl">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="bg-violet-50 p-2 rounded-lg">
-          <FileSearch size={20} className="text-violet-600" />
+        <div className="bg-sky-blue-50 p-2 rounded-lg">
+          <FileSearch size={20} className="text-sky-blue-600" />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Analyze Resume</h1>
@@ -120,7 +120,7 @@ export default function AnalyzePage() {
             placeholder="Paste the job description here for a more accurate analysis..."
             rows={5}
             maxLength={5000}
-            className="w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none text-gray-700 placeholder:text-gray-400"
+            className="w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-blue-500 resize-none text-gray-700 placeholder:text-gray-400"
           />
           <p className="text-xs text-gray-400 mt-1 text-right">
             {jobDescription.length}/5000
@@ -139,7 +139,7 @@ export default function AnalyzePage() {
           <Button
             onClick={handleAnalyze}
             disabled={loading || !file}
-            className="bg-violet-600 hover:bg-violet-700 text-white flex-1 gap-2"
+            className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white flex-1 gap-2"
           >
             {loading ? (
               <>

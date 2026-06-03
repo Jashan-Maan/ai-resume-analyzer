@@ -89,7 +89,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
         <Card className="md:col-span-2">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Target size={16} className="text-violet-600" />
+              <Target size={16} className="text-sky-blue-600" />
               Overall Assessment
             </CardTitle>
           </CardHeader>
@@ -206,7 +206,7 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
       {/* Suggestions */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-violet-600">
+          <CardTitle className="text-base flex items-center gap-2 text-sky-blue-600">
             <Lightbulb size={16} />
             Suggestions
           </CardTitle>

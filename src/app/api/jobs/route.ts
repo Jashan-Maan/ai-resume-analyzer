@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import dbConnect from "@/lib/dbConnect";
 import Job from "@/models/Job";
 import { createJobSchema } from "@/schemas/JobSchema";
+import { revalidatePath } from "next/cache";
 
 // GET — fetch all jobs for logged in user
 export async function GET() {
@@ -63,6 +64,9 @@ export async function POST(req: NextRequest) {
       ...result.data,
       userId: session.user.id,
     });
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/jobs");
 
     return NextResponse.json({ success: true, data: job }, { status: 201 });
   } catch (error) {

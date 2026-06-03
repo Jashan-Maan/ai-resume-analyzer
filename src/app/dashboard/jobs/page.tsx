@@ -74,8 +74,8 @@ export default function JobsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="bg-violet-50 p-2 rounded-lg">
-            <Briefcase size={20} className="text-violet-600" />
+          <div className="bg-sky-blue-50 p-2 rounded-lg">
+            <Briefcase size={20} className="text-sky-blue-600" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
@@ -104,14 +104,14 @@ export default function JobsPage() {
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition
                 ${
                   filter === tab.value
-                    ? "bg-violet-600 text-white"
-                    : "bg-white border text-gray-600 hover:border-violet-300"
+                    ? "bg-sky-blue-600 text-white"
+                    : "bg-white border text-gray-600 hover:border-sky-blue-300"
                 }`}
             >
               {tab.label}
               <span
                 className={`ml-1.5 text-xs ${
-                  filter === tab.value ? "text-violet-200" : "text-gray-400"
+                  filter === tab.value ? "text-sky-blue-200" : "text-gray-400"
                 }`}
               >
                 {count}

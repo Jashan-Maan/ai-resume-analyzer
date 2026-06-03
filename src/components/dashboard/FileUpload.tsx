@@ -34,10 +34,10 @@ export default function FileUpload({
 
   if (selectedFile) {
     return (
-      <div className="border-2 border-violet-200 bg-violet-50 rounded-xl p-6 flex items-center justify-between">
+      <div className="border-2 border-sky-blue-200 bg-sky-blue-50 rounded-xl p-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="bg-violet-100 p-2.5 rounded-lg">
-            <FileText size={20} className="text-violet-600" />
+          <div className="bg-sky-blue-100 p-2.5 rounded-lg">
+            <FileText size={20} className="text-sky-blue-600" />
           </div>
           <div>
             <p className="font-medium text-gray-800 text-sm">
@@ -70,8 +70,8 @@ export default function FileUpload({
       className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all
         ${
           isDragging
-            ? "border-violet-500 bg-violet-50"
-            : "border-gray-200 hover:border-violet-400 hover:bg-gray-50"
+            ? "border-sky-blue-500 bg-sky-blue-50"
+            : "border-gray-200 hover:border-sky-blue-400 hover:bg-gray-50"
         }`}
     >
       <input
@@ -81,8 +81,8 @@ export default function FileUpload({
         onChange={handleChange}
         className="hidden"
       />
-      <div className="bg-violet-50 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
-        <Upload size={24} className="text-violet-600" />
+      <div className="bg-sky-blue-50 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+        <Upload size={24} className="text-sky-blue-600" />
       </div>
       <p className="font-medium text-gray-800 mb-1">Drop your resume here</p>
       <p className="text-sm text-gray-400 mb-3">or click to browse files</p>
