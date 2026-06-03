@@ -37,6 +37,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           });
         }
 
+        user.id = existingUser._id.toString();
+
         return true;
       } catch (error) {
         console.error("Error in signIn callback:", error);
@@ -44,18 +46,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
 
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub as string;
-      }
-      return session;
-    },
-
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
       }
       return token;
+    },
+
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.sub as string;
+      }
+      return session;
     },
   },
 
