@@ -1,4 +1,3 @@
-// src/app/api/user/route.ts
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import dbConnect from "@/lib/dbConnect";
@@ -12,7 +11,7 @@ export async function GET() {
     if (!session) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -20,13 +19,13 @@ export async function GET() {
 
     // Get user from DB
     const dbUser = await User.findOne({
-      email: session.user.email
+      email: session.user.email,
     }).lean();
 
     if (!dbUser) {
       return NextResponse.json(
         { success: false, message: "User not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -39,15 +38,15 @@ export async function GET() {
     ]);
 
     // Calculate stats
-    const avgAtsScore = analyses.length > 0
-      ? Math.round(
-          analyses.reduce((sum, a) => sum + a.atsScore, 0) / analyses.length
-        )
-      : 0;
+    const avgAtsScore =
+      analyses.length > 0
+        ? Math.round(
+            analyses.reduce((sum, a) => sum + a.atsScore, 0) / analyses.length,
+          )
+        : 0;
 
-    const bestScore = analyses.length > 0
-      ? Math.max(...analyses.map((a) => a.atsScore))
-      : 0;
+    const bestScore =
+      analyses.length > 0 ? Math.max(...analyses.map((a) => a.atsScore)) : 0;
 
     const stats = {
       totalJobs: jobs.length,
@@ -58,7 +57,7 @@ export async function GET() {
       offers: jobs.filter((j) => j.status === "offer").length,
       applied: jobs.filter((j) => j.status === "applied").length,
       rejected: jobs.filter((j) => j.status === "rejected").length,
-    }
+    };
 
     return NextResponse.json({
       success: true,
@@ -73,12 +72,11 @@ export async function GET() {
         stats,
       },
     });
-
   } catch (error) {
     console.error("GET /api/user error:", error);
     return NextResponse.json(
       { success: false, message: "Server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
