@@ -7,7 +7,7 @@ export const createJobSchema = z.object({
     .enum(["applied", "interview", "offer", "rejected"])
     .default("applied"),
   jobDescription: z.string().min(1, { message: "Job Description is required" }),
-  notes: z.string().optional(),
+  note: z.string().optional(),
   appliedDate: z.string().optional(),
 });
 

@@ -27,9 +27,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         await dbConnect();
 
-        const existingUser = await User.findOne({ email: user.email });
+        const dbUser = await User.findOne({ email: user.email });
 
-        if (!existingUser) {
+        if (!dbUser) {
           await User.create({
             name: user.name,
             email: user.email,
@@ -37,7 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           });
         }
 
-        user.id = existingUser._id.toString();
+        user.id = dbUser._id.toString();
 
         return true;
       } catch (error) {
