@@ -5,6 +5,7 @@ import Analysis from "@/models/Analysis";
 import User from "@/models/User";
 import { extractTextFromPDF } from "@/lib/pdfParser";
 import { analyzeResume } from "@/lib/ai";
+import { analyzeLimiter, checkLimit } from "@/lib/rateLimiter";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,6 +15,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
         { status: 401 },
+      );
+    }
+
+    const { allowed, remaining, reset } = await checkLimit(
+      analyzeLimiter,
+      session.user.id,
+    );
+
+    if (!allowed) {
+      const resetDate = new Date(reset);
+      const minutesLeft = Math.ceil(
+        (resetDate.getTime() - Date.now()) / 1000 / 60,
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Rate limit exceeded. You can analyze again in ${minutesLeft} minutes.`,
+          remaining: 0,
+        },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": reset.toString(),
+          },
+        },
       );
     }
 
@@ -70,8 +97,13 @@ export async function POST(req: NextRequest) {
 
     // 9. Return result
     return NextResponse.json(
-      { success: true, data: savedAnalysis },
-      { status: 201 },
+      { success: true, data: savedAnalysis, remaining },
+      {
+        status: 201,
+        headers: {
+          "X-RateLimit-Remaining": remaining.toString(),
+        },
+      },
     );
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Server error";

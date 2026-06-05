@@ -27,6 +27,7 @@ export default function AnalyzePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<AnalysisData | null>(null);
+  const [remaining, setRemaining] = useState<number | null>(null);
 
   const handleAnalyze = async () => {
     if (!file) {
@@ -50,15 +51,21 @@ export default function AnalyzePage() {
 
       const data = await res.json();
 
+      if (res.status === 429) {
+        setError(data.message); // shows "Try again in X minutes"
+        return;
+      }
+
       if (!data.success) {
         setError(data.message || "Analysis failed. Please try again");
         return;
       }
 
       setResult(data.data);
+      setRemaining(data.remaining);
 
       setTimeout(() => {
-        document.getElementById("result")?.scrollIntoView({
+        document.getElementById("results")?.scrollIntoView({
           behavior: "smooth",
         });
       }, 100);
@@ -157,6 +164,11 @@ export default function AnalyzePage() {
             </Button>
           )}
         </div>
+        {remaining !== null && (
+          <p className="text-xs text-gray-400 text-center">
+            {remaining} analyses remaining this hour
+          </p>
+        )}
       </div>
 
       {/* Results */}

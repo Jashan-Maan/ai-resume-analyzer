@@ -83,8 +83,8 @@ export default function InterviewPage() {
     <div className="space-y-6 max-w-4xl">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="bg-violet-50 p-2 rounded-lg">
-          <MessageSquare size={20} className="text-violet-600" />
+        <div className="bg-sky-blue-50 p-2 rounded-lg">
+          <MessageSquare size={20} className="text-sky-blue-600" />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Mock Interview</h1>
@@ -95,13 +95,13 @@ export default function InterviewPage() {
       </div>
 
       {/* Info Banner */}
-      <div className="bg-violet-50 border border-violet-200 rounded-xl px-4 py-3 flex items-start gap-3">
-        <span className="text-violet-600 text-lg">🤖</span>
+      <div className="bg-sky-blue-50 border border-sky-blue-200 rounded-xl px-4 py-3 flex items-start gap-3">
+        <span className="text-sky-blue-600 text-lg">🤖</span>
         <div>
-          <p className="text-sm font-medium text-violet-800">
-            Powered by Gemini 2.5 Pro
+          <p className="text-sm font-medium text-sky-blue-800">
+            Powered by Gemini
           </p>
-          <p className="text-xs text-violet-600 mt-0.5">
+          <p className="text-xs text-sky-blue-600 mt-0.5">
             Google's most advanced model generates personalized questions based
             on your actual resume and the job description. Includes technical,
             behavioral, and project-specific questions.
@@ -137,7 +137,7 @@ export default function InterviewPage() {
             placeholder="Paste the job description here to get role-specific interview questions..."
             rows={5}
             maxLength={5000}
-            className="w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none text-gray-700 placeholder:text-gray-400"
+            className="w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-blue-500 resize-none text-gray-700 placeholder:text-gray-400"
           />
           <p className="text-xs text-gray-400 mt-1 text-right">
             {jobDescription.length}/5000
@@ -156,7 +156,7 @@ export default function InterviewPage() {
           <Button
             onClick={handleGenerate}
             disabled={loading || !file}
-            className="bg-violet-600 hover:bg-violet-700 text-white flex-1 gap-2"
+            className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white flex-1 gap-2"
           >
             {loading ? (
               <>
@@ -195,7 +195,7 @@ export default function InterviewPage() {
                 key={i}
                 className="flex items-start gap-2 text-sm text-gray-500"
               >
-                <span className="text-violet-500 font-bold shrink-0">
+                <span className="text-sky-blue-500 font-bold shrink-0">
                   {i + 1}.
                 </span>
                 {tip}

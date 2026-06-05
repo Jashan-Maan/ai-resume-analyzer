@@ -83,7 +83,7 @@ export async function generateInterviewQuestions(
   jobDescription?: string,
 ) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.5-pro",
+    model: "gemini-3.5-flash",
   });
 
   const prompt = `

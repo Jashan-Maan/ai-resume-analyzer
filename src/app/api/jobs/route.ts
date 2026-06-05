@@ -4,6 +4,7 @@ import dbConnect from "@/lib/dbConnect";
 import Job from "@/models/Job";
 import { createJobSchema } from "@/schemas/JobSchema";
 import { revalidatePath } from "next/cache";
+import { checkLimit, jobsLimiter } from "@/lib/rateLimiter";
 
 // GET — fetch all jobs for logged in user
 export async function GET() {
@@ -13,6 +14,14 @@ export async function GET() {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
         { status: 401 },
+      );
+    }
+
+    const { allowed } = await checkLimit(jobsLimiter, session.user.id);
+    if (!allowed) {
+      return NextResponse.json(
+        { success: false, message: "Too many requests. Please slow down." },
+        { status: 429 },
       );
     }
 
@@ -40,6 +49,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
         { status: 401 },
+      );
+    }
+
+    // ✅ Rate limit
+    const { allowed } = await checkLimit(jobsLimiter, session.user.id);
+    if (!allowed) {
+      return NextResponse.json(
+        { success: false, message: "Too many requests. Please slow down." },
+        { status: 429 },
       );
     }
 

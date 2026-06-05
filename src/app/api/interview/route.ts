@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { extractTextFromPDF } from "@/lib/pdfParser";
 import { generateInterviewQuestions } from "@/lib/ai";
+import { checkLimit, interviewLimiter } from "@/lib/rateLimiter";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,6 +12,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
         { status: 401 },
+      );
+    }
+
+    // ✅ Rate limit check
+    const { allowed, remaining, reset } = await checkLimit(
+      interviewLimiter,
+      session.user.id,
+    );
+
+    if (!allowed) {
+      const resetDate = new Date(reset);
+      const minutesLeft = Math.ceil(
+        (resetDate.getTime() - Date.now()) / 1000 / 60,
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Rate limit exceeded. You can generate questions again in ${minutesLeft} minutes.`,
+        },
+        { status: 429 },
       );
     }
 
