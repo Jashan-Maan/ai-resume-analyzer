@@ -29,12 +29,20 @@ with actionable improvement suggestions — all in seconds.
 - [Database Models](#-database-models)
 - [Authentication](#-authentication)
 - [AI Integration](#-ai-integration)
+- [Rate Limiting](#-rate-limiting)
 - [Deployment](#-deployment)
 - [License](#-license)
 
 ---
 
 ## ✨ Features
+
+### 🌐 Landing Page
+
+- Fully designed marketing landing page with animated sections
+- Hero section, stats bar, feature showcase, how-it-works guide, testimonials, and call-to-action
+- Smooth Framer Motion scroll animations
+- Responsive navbar with sign-in link
 
 ### 🔍 AI Resume Analysis
 
@@ -44,6 +52,15 @@ with actionable improvement suggestions — all in seconds.
 - Get detailed strengths, weaknesses, and missing keyword reports
 - Prioritized, actionable improvement suggestions (high / medium / low)
 - Resume section detection (experience, education, skills, projects, summary)
+
+### 🎤 Mock Interview Prep
+
+- Upload your resume + optional job description to generate AI-powered interview questions
+- **5 Technical questions** with difficulty levels (easy / medium / hard) and topic tags
+- **3 Behavioral questions** with tips on what the interviewer is looking for
+- **3 Project-based questions** tied to your specific resume projects
+- Expandable question cards with coaching tips
+- Powered by Gemini 3.5 Flash for advanced reasoning
 
 ### 📊 Analytics Dashboard
 
@@ -59,6 +76,14 @@ with actionable improvement suggestions — all in seconds.
 - Sortable table with status badges and inline actions (edit, delete)
 - Zod-validated input on both client and server
 
+### 👤 User Profile
+
+- Profile page with avatar, name, email, role badge, and member-since date
+- Career statistics grid: total analyses, jobs applied, avg ATS score, best score, interviews, offers
+- Application breakdown with status percentages and progress bar
+- ATS score summary panel
+- Sign-out button
+
 ### 🔐 Authentication
 
 - OAuth sign-in via **Google** and **GitHub** (NextAuth.js v5)
@@ -72,25 +97,36 @@ with actionable improvement suggestions — all in seconds.
 - Summary stats (total analyses, average ATS score, best score)
 - Sorted by most recent, with analysis number badges
 
+### 🛡️ Rate Limiting
+
+- Per-user rate limiting powered by **Upstash Redis**
+- **Resume analysis:** 5 requests per 3 hours
+- **Interview questions:** 5 requests per 3 hours
+- **Job CRUD:** 100 requests per 15 minutes
+- Friendly error messages with reset countdown
+- `X-RateLimit-Remaining` headers on API responses
+
 ---
 
 ## 🛠 Tech Stack
 
-| Layer             | Technology                                                                               |
-| ----------------- | ---------------------------------------------------------------------------------------- |
-| **Framework**     | [Next.js 16](https://nextjs.org/) (App Router, React Server Components)                  |
-| **Language**      | [TypeScript 5](https://www.typescriptlang.org/)                                          |
-| **Styling**       | [Tailwind CSS 4](https://tailwindcss.com/)                                               |
-| **UI Components** | [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)              |
-| **Animations**    | [Framer Motion](https://www.framer.com/motion/)                                          |
-| **Charts**        | [Recharts](https://recharts.org/)                                                        |
-| **Icons**         | [Lucide React](https://lucide.dev/)                                                      |
-| **Auth**          | [NextAuth.js v5](https://authjs.dev/) (Google + GitHub OAuth)                            |
-| **Database**      | [MongoDB Atlas](https://www.mongodb.com/atlas) via [Mongoose 9](https://mongoosejs.com/) |
-| **AI**            | [Google Gemini API](https://ai.google.dev/) (2.5 Flash + 2.5 Pro)                        |
-| **PDF Parsing**   | [unpdf](https://github.com/nicolo-ribaudo/unpdf)                                         |
-| **Validation**    | [Zod 4](https://zod.dev/)                                                                |
-| **Font**          | [Geist](https://vercel.com/font) (Sans + Mono)                                           |
+| Layer              | Technology                                                                               |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| **Framework**      | [Next.js 16](https://nextjs.org/) (App Router, React Server Components)                  |
+| **Language**       | [TypeScript 5](https://www.typescriptlang.org/)                                          |
+| **Styling**        | [Tailwind CSS 4](https://tailwindcss.com/)                                               |
+| **UI Components**  | [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)              |
+| **Animations**     | [Framer Motion](https://www.framer.com/motion/)                                          |
+| **Charts**         | [Recharts](https://recharts.org/)                                                        |
+| **Icons**          | [Lucide React](https://lucide.dev/)                                                      |
+| **Auth**           | [NextAuth.js v5](https://authjs.dev/) (Google + GitHub OAuth)                            |
+| **Database**       | [MongoDB Atlas](https://www.mongodb.com/atlas) via [Mongoose 9](https://mongoosejs.com/) |
+| **AI**             | [Google Gemini API](https://ai.google.dev/) (2.5 Flash + 3.5 Flash)                      |
+| **Rate Limiting**  | [Upstash Redis](https://upstash.com/) + [@upstash/ratelimit](https://github.com/upstash/ratelimit) |
+| **PDF Parsing**    | [unpdf](https://github.com/nicolo-ribaudo/unpdf)                                         |
+| **Validation**     | [Zod 4](https://zod.dev/)                                                                |
+| **Date Utilities** | [date-fns](https://date-fns.org/)                                                        |
+| **Font**           | [Geist](https://vercel.com/font) (Sans + Mono)                                           |
 
 ---
 
@@ -100,7 +136,8 @@ with actionable improvement suggestions — all in seconds.
 ┌────────────────────────────────────────────────────────┐
 │                      Client (Browser)                  │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐             │
-│  │  Login   │  │Dashboard │  │ Analyze  │  ...pages   │
+│  │ Landing  │  │Dashboard │  │ Analyze  │  ...pages   │
+│  │  Page    │  │          │  │          │             │
 │  └────┬─────┘  └────┬─────┘  └────┬─────┘             │
 │       │              │             │                   │
 │       ▼              ▼             ▼                   │
@@ -110,28 +147,38 @@ with actionable improvement suggestions — all in seconds.
 │  └─────────────────┬───────────────────────────┘       │
 └────────────────────┼───────────────────────────────────┘
                      │
-         ┌───────────┼───────────┐
-         ▼           ▼           ▼
-   ┌──────────┐ ┌──────────┐ ┌───────────┐
-   │ NextAuth │ │ API      │ │ Middleware │
-   │ (OAuth)  │ │ Routes   │ │ (Auth)    │
-   └────┬─────┘ └────┬─────┘ └───────────┘
+         ┌───────────┼───────────────┐
+         ▼           ▼               ▼
+   ┌──────────┐ ┌──────────┐ ┌────────────┐
+   │ NextAuth │ │ API      │ │ Middleware  │
+   │ (OAuth)  │ │ Routes   │ │ (Auth)     │
+   └────┬─────┘ └────┬─────┘ └────────────┘
         │             │
-        ▼             ▼
-   ┌──────────┐ ┌──────────────┐
-   │ MongoDB  │ │  Gemini AI   │
-   │ Atlas    │ │  (Google)    │
-   └──────────┘ └──────────────┘
+        ▼             ├──────────────┐
+   ┌──────────┐  ┌────▼─────┐  ┌────▼─────┐
+   │ MongoDB  │  │ Gemini   │  │ Upstash  │
+   │ Atlas    │  │ AI       │  │ Redis    │
+   └──────────┘  └──────────┘  └──────────┘
 ```
 
 **Data Flow — Resume Analysis:**
 
 1. User uploads PDF + optional job description → client sends `multipart/form-data` to `POST /api/analyze`
-2. Server extracts text from PDF using `unpdf`
-3. Extracted text + job description are sent to **Gemini 2.5 Flash** with a structured prompt
-4. Gemini returns JSON with ATS score, strengths, weaknesses, missing keywords, suggestions, and section detection
-5. Result is saved to MongoDB under the user's ID
-6. Client renders the analysis result with score gauge, strength/weakness lists, and suggestion cards
+2. Rate limiter checks the user's request count against Upstash Redis
+3. Server extracts text from PDF using `unpdf`
+4. Extracted text + job description are sent to **Gemini 2.5 Flash** with a structured prompt
+5. Gemini returns JSON with ATS score, strengths, weaknesses, missing keywords, suggestions, and section detection
+6. Result is saved to MongoDB under the user's ID
+7. Client renders the analysis result with score gauge, strength/weakness lists, and suggestion cards
+
+**Data Flow — Mock Interview:**
+
+1. User uploads PDF + optional job description → client sends `multipart/form-data` to `POST /api/interview`
+2. Rate limiter checks the user's request count against Upstash Redis
+3. Server extracts text from PDF using `unpdf`
+4. Extracted text + job description are sent to **Gemini 3.5 Flash** with an interview prompt
+5. Gemini returns JSON with technical, behavioral, and project-based questions
+6. Client renders expandable question cards with tips and difficulty badges
 
 ---
 
@@ -145,7 +192,10 @@ ai-resume-analyzer/
 ├── tsconfig.json
 ├── .env.example                 # Required environment variables template
 │
-├── public/                      # Static assets (logos, OAuth provider icons)
+├── public/                      # Static assets (logo, OAuth provider icons)
+│   ├── logo.svg
+│   ├── google.svg
+│   └── github.svg
 │
 └── src/
     ├── auth.ts                  # NextAuth.js v5 configuration (Google + GitHub)
@@ -153,7 +203,7 @@ ai-resume-analyzer/
     ├── app/
     │   ├── globals.css          # Global styles + Tailwind base
     │   ├── layout.tsx           # Root layout (Geist font, metadata)
-    │   ├── page.tsx             # Landing page (redirects to dashboard)
+    │   ├── page.tsx             # Landing page (Hero, Features, Testimonials, etc.)
     │   │
     │   ├── login/
     │   │   ├── page.tsx         # OAuth sign-in page (Google + GitHub buttons)
@@ -164,10 +214,14 @@ ai-resume-analyzer/
     │   │   ├── page.tsx         # Dashboard overview (stats, charts)
     │   │   ├── analyze/
     │   │   │   └── page.tsx     # Resume upload + AI analysis form
+    │   │   ├── interview/
+    │   │   │   └── page.tsx     # Mock interview question generator
     │   │   ├── analyses/
     │   │   │   └── page.tsx     # Analysis history listing
-    │   │   └── jobs/
-    │   │       └── page.tsx     # Job application tracker
+    │   │   ├── jobs/
+    │   │   │   └── page.tsx     # Job application tracker
+    │   │   └── profile/
+    │   │       └── page.tsx     # User profile + career statistics
     │   │
     │   └── api/
     │       ├── auth/
@@ -175,14 +229,26 @@ ai-resume-analyzer/
     │       │       └── route.ts # NextAuth API route handler
     │       ├── analyze/
     │       │   └── route.ts     # POST: analyze resume / GET: fetch analyses
-    │       └── jobs/
-    │           ├── route.ts     # GET: list jobs / POST: create job
-    │           └── [id]/
-    │               └── route.ts # PUT: update job / DELETE: delete job
+    │       ├── interview/
+    │       │   └── route.ts     # POST: generate mock interview questions
+    │       ├── jobs/
+    │       │   ├── route.ts     # GET: list jobs / POST: create job
+    │       │   └── [id]/
+    │       │       └── route.ts # PUT: update job / DELETE: delete job
+    │       └── user/
+    │           └── route.ts     # GET: user profile + aggregated stats
     │
     ├── components/
-    │   ├── ui/                  # shadcn/ui primitives (Button, Card, etc.)
-    │   ├── shared/              # Shared/reusable components
+    │   ├── ui/                  # shadcn/ui primitives (Button, Card, Badge, etc.)
+    │   ├── shared/              # Landing page components
+    │   │   ├── Navbar.tsx       # Landing page navigation bar
+    │   │   ├── Hero.tsx         # Hero section with CTA
+    │   │   ├── StatsBar.tsx     # Stats counter bar
+    │   │   ├── Features.tsx     # Feature showcase grid
+    │   │   ├── HowItWorks.tsx   # Step-by-step guide section
+    │   │   ├── Testimonials.tsx # User testimonials carousel
+    │   │   ├── CallToAction.tsx # Bottom CTA section
+    │   │   └── Footer.tsx       # Page footer
     │   └── dashboard/           # Dashboard-specific components
     │       ├── Sidebar.tsx      # Navigation sidebar with user avatar
     │       ├── StatsCard.tsx    # Stat card with icon + trend text
@@ -191,14 +257,17 @@ ai-resume-analyzer/
     │       ├── FileUpload.tsx   # Drag-and-drop PDF upload component
     │       ├── AnalysisResult.tsx # Full analysis result display
     │       ├── AnalysisCard.tsx # Expandable analysis history card
+    │       ├── InterviewResult.tsx # Mock interview questions display
     │       ├── JobTable.tsx     # Job applications table with actions
     │       ├── AddJobModal.tsx  # Modal form for adding new jobs
-    │       └── StatusBadge.tsx  # Colored status badge component
+    │       ├── StatusBadge.tsx  # Colored status badge component
+    │       └── SignOutButton.tsx # Sign-out button for profile page
     │
     ├── lib/
     │   ├── ai.ts               # Gemini AI integration (analysis + interview questions)
     │   ├── dbConnect.ts        # MongoDB connection singleton
     │   ├── pdfParser.ts        # PDF text extraction using unpdf
+    │   ├── rateLimiter.ts      # Upstash Redis rate limiters (analyze, interview, jobs)
     │   └── utils.ts            # Utility functions (cn helper)
     │
     ├── models/
@@ -227,6 +296,7 @@ ai-resume-analyzer/
 | **Google Cloud Console**      | OAuth 2.0 client credentials        |
 | **GitHub Developer Settings** | OAuth App credentials               |
 | **Google AI Studio**          | Gemini API key                      |
+| **Upstash**                   | Redis database (free tier works)    |
 
 ### Installation
 
@@ -267,6 +337,10 @@ NEXTAUTH_URL=http://localhost:3000
 
 # Gemini AI — get your API key from https://aistudio.google.com/apikey
 GEMINI_API_KEY=your_gemini_api_key
+
+# Upstash Redis — get credentials from https://console.upstash.com
+UPSTASH_REDIS_REST_URL=your_redis_rest_url
+UPSTASH_REDIS_REST_TOKEN=your_redis_rest_token
 ```
 
 **📌 Setting Up OAuth Providers (step-by-step)**
@@ -295,13 +369,20 @@ GEMINI_API_KEY=your_gemini_api_key
 2. Click **Create API Key**
 3. Copy the key into your `.env` as `GEMINI_API_KEY`
 
+#### Upstash Redis
+
+1. Go to [Upstash Console](https://console.upstash.com/)
+2. Create a new **Redis** database (any region, free tier is fine)
+3. Copy the **REST URL** and **REST Token** from the database details page
+4. Paste them into your `.env` as `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
+
 ### Running the Development Server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser. You'll be redirected to the login page.
+Open [http://localhost:3000](http://localhost:3000) in your browser. You'll see the landing page — click **Get Started** to sign in.
 
 | Command         | Description                                |
 | --------------- | ------------------------------------------ |
@@ -314,7 +395,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser. You'll be r
 
 ## 📡 API Reference
 
-All API routes are protected by NextAuth.js session authentication. Unauthorized requests return `401`.
+All API routes are protected by NextAuth.js session authentication. Unauthorized requests return `401`. Rate-limited requests return `429`.
 
 ### Resume Analysis
 
@@ -328,6 +409,7 @@ Upload a resume PDF for AI-powered analysis.
 | `jobDescription` | `string`     | ❌       | Target job description for tailored analysis |
 
 **Content-Type:** `multipart/form-data`
+**Rate Limit:** 5 requests per 3 hours per user
 
 **Response** `201 Created`:
 
@@ -356,7 +438,8 @@ Upload a resume PDF for AI-powered analysis.
       "summary": false
     },
     "createdAt": "2026-06-02T10:30:00.000Z"
-  }
+  },
+  "remaining": 4
 }
 ```
 
@@ -375,11 +458,93 @@ Fetch the authenticated user's last 10 analyses.
 
 ---
 
+### Mock Interview Questions
+
+#### `POST /api/interview`
+
+Upload a resume PDF to generate AI-powered mock interview questions.
+
+| Parameter        | Type         | Required | Description                                        |
+| ---------------- | ------------ | -------- | -------------------------------------------------- |
+| `resume`         | `File` (PDF) | ✅       | Resume file (max 4 MB, PDF only)                   |
+| `jobDescription` | `string`     | ❌       | Job description for role-specific questions         |
+
+**Content-Type:** `multipart/form-data`
+**Rate Limit:** 5 requests per 3 hours per user
+
+**Response** `200 OK`:
+
+```json
+{
+  "success": true,
+  "data": {
+    "technical": [
+      {
+        "question": "Explain how you would design a rate limiter...",
+        "difficulty": "medium",
+        "topic": "System Design"
+      }
+    ],
+    "behavioral": [
+      {
+        "question": "Tell me about a time you handled a disagreement...",
+        "tip": "Interviewer wants to see conflict resolution skills"
+      }
+    ],
+    "projectBased": [
+      {
+        "question": "Walk me through the architecture of your KIRA project...",
+        "project": "AI Resume Analyzer"
+      }
+    ]
+  }
+}
+```
+
+---
+
+### User Profile
+
+#### `GET /api/user`
+
+Fetch the authenticated user's profile and aggregated career statistics.
+
+**Response** `200 OK`:
+
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "name": "Jashan Maan",
+      "email": "jashan@example.com",
+      "image": "https://...",
+      "role": "user",
+      "createdAt": "2026-05-01T00:00:00.000Z"
+    },
+    "stats": {
+      "totalJobs": 12,
+      "totalAnalyses": 8,
+      "avgAtsScore": 74,
+      "bestScore": 92,
+      "interviews": 4,
+      "offers": 2,
+      "applied": 5,
+      "rejected": 1
+    }
+  }
+}
+```
+
+---
+
 ### Job Applications
 
 #### `GET /api/jobs`
 
 Fetch all job applications for the authenticated user (sorted by most recent).
+
+**Rate Limit:** 100 requests per 15 minutes per user
 
 **Response** `200 OK`:
 
@@ -403,6 +568,8 @@ Fetch all job applications for the authenticated user (sorted by most recent).
 #### `POST /api/jobs`
 
 Create a new job application. Request body is validated with Zod.
+
+**Rate Limit:** 100 requests per 15 minutes per user
 
 | Field            | Type                                                | Required | Description              |
 | ---------------- | --------------------------------------------------- | -------- | ------------------------ |
@@ -496,15 +663,32 @@ Used in `analyzeResume()` for fast, structured resume evaluation:
   - **40–59:** Average match, significant improvements needed
   - **0–39:** Poor match, major revision required
 
-### Gemini 2.5 Pro — Mock Interview Questions
+### Gemini 3.5 Flash — Mock Interview Questions
 
-Used in `generateInterviewQuestions()` for deeper reasoning:
+Used in `generateInterviewQuestions()` for generating tailored interview prep:
 
-- Generates tailored interview questions based on the resume and job description
+- Generates personalized interview questions based on the resume and job description
 - Returns three categories:
   - **Technical questions** (5) with difficulty level and topic
   - **Behavioral questions** (3) with tips on what the interviewer is looking for
   - **Project-based questions** (3) tied to specific resume projects
+
+---
+
+## 🛡️ Rate Limiting
+
+KIRA uses [Upstash Redis](https://upstash.com/) with the `@upstash/ratelimit` package to protect API routes from abuse:
+
+| Route              | Limit                     | Strategy        |
+| ------------------ | ------------------------- | --------------- |
+| `POST /api/analyze`   | 5 requests per 3 hours | Sliding window  |
+| `POST /api/interview` | 5 requests per 3 hours | Sliding window  |
+| `GET/POST /api/jobs`  | 100 requests per 15 min | Sliding window |
+
+- Rate limits are applied **per authenticated user** (keyed by user ID)
+- Exceeded limits return `429 Too Many Requests` with a message indicating when the limit resets
+- Analytics are enabled for monitoring via the Upstash dashboard
+- Configuration is centralized in `src/lib/rateLimiter.ts`
 
 ---
 
