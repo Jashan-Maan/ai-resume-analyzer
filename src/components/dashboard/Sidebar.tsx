@@ -9,12 +9,18 @@ import {
   BarChart2,
   User,
   LogOut,
+  MessageSquare,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/analyze", label: "Analyze Resume", icon: FileSearch },
+  {
+    href: "/dashboard/interview",
+    label: "Mock Interview",
+    icon: MessageSquare,
+  },
   { href: "/dashboard/jobs", label: "Job Applications", icon: Briefcase },
   { href: "/dashboard/analyses", label: "My Analyses", icon: BarChart2 },
   { href: "/dashboard/profile", label: "Profile", icon: User },
