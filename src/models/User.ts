@@ -8,8 +8,7 @@ export interface IUser extends Document {
   role: "user" | "admin";
   analysisCount: number;
   isVerified: boolean;
-  verifyToken?: string;
-  verifyTokenExpiry?: Date;
+  verifyCode?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -52,11 +51,8 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
-    verifyToken: {
+    verifyCode: {
       type: String,
-    },
-    verifyTokenExpiry: {
-      type: Date,
     },
   },
   { timestamps: true },
