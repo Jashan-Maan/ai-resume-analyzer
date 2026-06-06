@@ -3,9 +3,13 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IUser extends Document {
   name: string;
   email: string;
+  password?: string;
   image?: string;
   role: "user" | "admin";
   analysisCount: number;
+  isVerified: boolean;
+  verifyToken?: string;
+  verifyTokenExpiry?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,6 +33,9 @@ const userSchema = new Schema<IUser>(
         "Please enter a valid email address",
       ],
     },
+    password: {
+      type: String,
+    },
     image: {
       type: String,
     },
@@ -40,6 +47,16 @@ const userSchema = new Schema<IUser>(
     analysisCount: {
       type: Number,
       default: 0,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verifyToken: {
+      type: String,
+    },
+    verifyTokenExpiry: {
+      type: Date,
     },
   },
   { timestamps: true },
