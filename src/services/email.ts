@@ -1,21 +1,25 @@
 import VerificationEmail from "@/components/email/VerificationEmail";
-import { generateOTP } from "@/helper/verifyCode";
 import { resend } from "@/lib/resend";
-import { NextApiRequest, NextApiResponse } from "next";
+import { ApiResponse } from "@/types/ApiResponse";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const verifyCode = generateOTP();
-
-  const { data, error } = await resend.emails.send({
-    from: "Acme <onboarding@resend.dev>",
-    to: ["delivered@resend.dev"],
-    subject: "Hello world",
-    react: VerificationEmail({ verificationCode: verifyCode }),
-  });
-
-  if (error) {
-    return res.status(400).json(error);
+export async function sendVerificationEmail(
+  email: string,
+  username: string,
+  verifyCode: string,
+): Promise<ApiResponse> {
+  try {
+    await resend.emails.send({
+      from: "Kira <onboarding@resend.dev>",
+      to: [email],
+      subject: "Verify your email address - Kira",
+      react: VerificationEmail({ verificationCode: verifyCode, username }),
+    });
+    return { success: true, message: "Email sent successfully" };
+  } catch (error) {
+    console.error("Error sending verification email:", error);
+    return {
+      success: false,
+      message: "Failed to send verification email",
+    };
   }
-
-  res.status(200).json(data);
-};
+}

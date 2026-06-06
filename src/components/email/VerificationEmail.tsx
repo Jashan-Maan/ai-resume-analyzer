@@ -16,16 +16,18 @@ import tailwindConfig from "../../../tailwind.config";
 
 interface VerificationEmailProps {
   verificationCode: string;
+  username: string;
 }
 
 export default function VerificationEmail({
   verificationCode,
+  username,
 }: VerificationEmailProps) {
   return (
     <Html>
       <Head />
       <Tailwind config={tailwindConfig}>
-        <Body className="bg-white font-aws text-[#212121]">
+        <Body className="bg-white font-kira text-[#212121]">
           <Preview>KIRA Email Verification</Preview>
           <Container className="p-5 mx-auto bg-[#eee]">
             <Section className="bg-white">
@@ -39,7 +41,7 @@ export default function VerificationEmail({
               </Section>
               <Section className="py-[25px] px-[35px]">
                 <Heading className="text-[#333] text-[20px] font-bold mb-[15px]">
-                  Verify your email address
+                  Verify your email address, {username}
                 </Heading>
                 <Text className="text-[#333] text-[14px] leading-[24px] mt-6 mb-[14px] mx-0">
                   Thanks for starting the new KIRA account creation process. We
@@ -63,33 +65,13 @@ export default function VerificationEmail({
               <Hr />
               <Section className="py-[25px] px-[35px]">
                 <Text className="text-[#333] text-[14px] m-0">
-                  Amazon Web Services will never email you and ask you to
-                  disclose or verify your password, credit card, or banking
-                  account number.
+                  Kira will never email you and ask you to disclose or verify
+                  your password, credit card, or banking account number.
                 </Text>
               </Section>
             </Section>
             <Text className="text-[#333] text-[12px] my-[24px] mx-0 px-5 py-0">
-              This message was produced and distributed by Amazon Web Services,
-              Inc., 410 Terry Ave. North, Seattle, WA 98109. © 2022, Amazon Web
-              Services, Inc.. All rights reserved. AWS is a registered trademark
-              of{" "}
-              <Link
-                href="https://kiraresume.com"
-                target="_blank"
-                className="text-[#2754C5] underline text-[14px]"
-              >
-                KIRA
-              </Link>
-              , Inc. View our{" "}
-              <Link
-                href="https://kiraresume.com"
-                target="_blank"
-                className="text-[#2754C5] underline text-[14px]"
-              >
-                privacy policy
-              </Link>
-              .
+              All rights reserved.
             </Text>
           </Container>
         </Body>

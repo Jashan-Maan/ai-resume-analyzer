@@ -9,6 +9,7 @@ export interface IUser extends Document {
   analysisCount: number;
   isVerified: boolean;
   verifyCode?: string;
+  verifyCodeExpiry?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -53,6 +54,9 @@ const userSchema = new Schema<IUser>(
     },
     verifyCode: {
       type: String,
+    },
+    verifyCodeExpiry: {
+      type: Date,
     },
   },
   { timestamps: true },
