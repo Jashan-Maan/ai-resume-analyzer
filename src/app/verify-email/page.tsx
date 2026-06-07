@@ -66,7 +66,7 @@ export default function VerifyEmailPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/auth/verify-code", {
+      const res = await fetch("/api/auth/verify-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code: fullCode }),
