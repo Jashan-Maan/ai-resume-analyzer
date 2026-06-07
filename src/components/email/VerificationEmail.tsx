@@ -38,6 +38,7 @@ export default function VerificationEmail({
                   height="40"
                   alt="KIRA's Logo"
                 />
+                <Text>Kira</Text>
               </Section>
               <Section className="py-[25px] px-[35px]">
                 <Heading className="text-[#333] text-[20px] font-bold mb-[15px]">
