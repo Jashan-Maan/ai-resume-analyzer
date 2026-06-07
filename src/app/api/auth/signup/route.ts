@@ -24,6 +24,9 @@ export async function POST(req: NextRequest) {
 
     const existingUser = await User.findOne({ email });
 
+    const verifyCode = generateOTP();
+    const verifyCodeExpiry = generateOTPExpiry();
+
     if (existingUser) {
       if (existingUser.isVerified) {
         if (!existingUser.password) {
@@ -42,8 +45,6 @@ export async function POST(req: NextRequest) {
         );
       } else {
         const hashedPassword = await bcrypt.hash(password, 12);
-        const verifyCode = generateOTP();
-        const verifyCodeExpiry = generateOTPExpiry();
 
         existingUser.password = hashedPassword;
         existingUser.verifyCode = verifyCode;
@@ -64,8 +65,6 @@ export async function POST(req: NextRequest) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    const verifyCode = generateOTP();
-    const verifyCodeExpiry = generateOTPExpiry();
 
     await User.create({
       name,
@@ -76,7 +75,17 @@ export async function POST(req: NextRequest) {
       verifyCodeExpiry,
     });
 
-    await sendVerificationEmail(email, name, verifyCode);
+    const emailResult = await sendVerificationEmail(email, name, verifyCode);
+
+    if (!emailResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Failed to send verification email. Try again.",
+        },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json(
       {

@@ -6,5 +6,7 @@ export const generateOTP = (): string => {
 };
 
 export const generateOTPExpiry = (): Date => {
-  return new Date(Date.now() + 10 * 60 * 1000); // 10 min
+  const expiry = new Date();
+  expiry.setMinutes(expiry.getMinutes() + 10); // 10 minutes
+  return expiry;
 };
