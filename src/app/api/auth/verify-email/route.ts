@@ -4,8 +4,7 @@ import User from "@/models/User";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { email, code } = body;
+    const { email, code } = await req.json();
 
     if (!email || !code) {
       return NextResponse.json(
@@ -42,15 +41,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const isCodeNotExpired = new Date(user.verifyCodeExpiry!) > new Date();
-
-    if (!isCodeNotExpired) {
+    if (!user.verifyCodeExpiry || new Date() > user.verifyCodeExpiry) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Verification code has expired. Please sign up again to get a new code.",
-        },
+        { success: false, message: "Code expired. Please sign up again." },
         { status: 400 },
       );
     }
