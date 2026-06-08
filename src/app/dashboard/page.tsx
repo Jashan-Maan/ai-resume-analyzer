@@ -35,26 +35,47 @@ export default async function DashboardPage() {
 
   const firstName = session.user?.name?.split(" ")[0];
 
+  const bestScore =
+    analyses.length > 0 ? Math.max(...analyses.map((a) => a.atsScore)) : 0;
+
+  const interviewRate =
+    jobs.length > 0 ? Math.round((stats.interview / jobs.length) * 100) : 0;
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Welcome back, {firstName}! Here's your career journey.
-          </p>
+    <div className="relative space-y-8">
+      {/* Background Glow */}
+      <div className="absolute -top-20 left-0 h-72 w-72 rounded-full bg-sky-400/10 blur-3xl" />
+      <div className="absolute top-20 right-0 h-72 w-72 rounded-full bg-blue-400/10 blur-3xl" />
+
+      {/* Hero Section */}
+      <div className="relative overflow-hidden rounded-3xl border border-white/50 bg-white/80 backdrop-blur-xl shadow-sm">
+        <div className="absolute inset-0 bg-linear-to-r from-sky-500/10 via-blue-500/5 to-purple-500/10" />
+
+        <div className="relative flex flex-col gap-6 p-8 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-medium text-sky-600">Career Dashboard</p>
+
+            <h1 className="mt-2 text-3xl font-bold text-slate-900">
+              Welcome back, {firstName}
+            </h1>
+
+            <p className="mt-2 text-slate-500">
+              Track applications, monitor ATS scores, and accelerate your job
+              search journey.
+            </p>
+          </div>
+
+          <Link
+            href="/dashboard/analyze"
+            className="inline-flex items-center justify-center rounded-xl bg-linear-to-r from-sky-600 to-blue-600 px-5 py-3 font-medium text-white shadow-lg shadow-sky-500/20 transition hover:scale-105"
+          >
+            ✦ Analyze Resume
+          </Link>
         </div>
-        <Link
-          href="/dashboard/analyze"
-          className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2"
-        >
-          ✦ Analyze Resume
-        </Link>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           {
             label: "Applications Applied",
@@ -72,7 +93,9 @@ export default async function DashboardPage() {
             bg: "bg-green-50",
             trend:
               jobs.length > 0
-                ? `${Math.round((stats.interview / jobs.length) * 100)}% response rate`
+                ? `${Math.round(
+                    (stats.interview / jobs.length) * 100,
+                  )}% response rate`
                 : "No data yet",
           },
           {
@@ -87,37 +110,64 @@ export default async function DashboardPage() {
             label: "Offers",
             value: stats.offer,
             icon: Trophy,
-            color: "text-sky-blue-600",
-            bg: "bg-sky-blue-50",
+            color: "text-sky-600",
+            bg: "bg-sky-50",
             trend: stats.offer > 0 ? "🎉 Congratulations!" : "Keep going!",
           },
         ].map((stat) => (
-          <StatsCard key={stat.label} {...stat} />
+          <div
+            key={stat.label}
+            className="transition-transform duration-300 hover:-translate-y-1"
+          >
+            <StatsCard {...stat} />
+          </div>
         ))}
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Donut Chart */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base text-gray-800">
-              Application Status Overview
+      {/* Insights */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <Card className="border-0 bg-linear-to-br from-sky-600 to-blue-600 text-white shadow-lg">
+          <CardContent className="p-6">
+            <p className="text-sm opacity-80">Interview Rate</p>
+            <h3 className="mt-2 text-3xl font-bold">{interviewRate}%</h3>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-sm">
+          <CardContent className="p-6">
+            <p className="text-sm text-slate-500">Best ATS Score</p>
+            <h3 className="mt-2 text-3xl font-bold">{bestScore}</h3>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-sm">
+          <CardContent className="p-6">
+            <p className="text-sm text-slate-500">Resume Analyses</p>
+            <h3 className="mt-2 text-3xl font-bold">{analyses.length}</h3>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-sm">
+          <CardHeader className="border-b">
+            <CardTitle className="text-lg">
+              📊 Application Status Overview
             </CardTitle>
           </CardHeader>
-          <CardContent>
+
+          <CardContent className="pt-6">
             <StatusChart data={stats} />
           </CardContent>
         </Card>
 
-        {/* Line Chart */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base text-gray-800">
-              ATS Score Trend
-            </CardTitle>
+        <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-sm">
+          <CardHeader className="border-b">
+            <CardTitle className="text-lg">📈 ATS Score Trend</CardTitle>
           </CardHeader>
-          <CardContent>
+
+          <CardContent className="pt-6">
             <ScoreTrendChart
               analyses={analyses.map((a) => ({
                 atsScore: a.atsScore,
@@ -128,21 +178,55 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {/* Empty state if no data */}
+      {/* Recent Activity */}
+      {analyses.length > 0 && (
+        <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-sm">
+          <CardHeader>
+            <CardTitle>Recent Resume Analyses</CardTitle>
+          </CardHeader>
+
+          <CardContent>
+            <div className="space-y-3">
+              {analyses.slice(0, 5).map((analysis: any, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between rounded-xl border bg-slate-50 p-4"
+                >
+                  <div>
+                    <p className="font-medium text-slate-800">
+                      Resume Analysis
+                    </p>
+
+                    <p className="text-sm text-slate-500">ATS Evaluation</p>
+                  </div>
+
+                  <div className="rounded-lg bg-sky-100 px-3 py-1 font-semibold text-sky-700">
+                    {analysis.atsScore}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Empty State */}
       {jobs.length === 0 && analyses.length === 0 && (
-        <div className="bg-white rounded-xl border p-12 text-center">
-          <p className="text-4xl mb-4">📄</p>
-          <h3 className="font-semibold text-gray-800 mb-2">
-            Start your journey
+        <div className="rounded-3xl border bg-white p-16 text-center shadow-sm">
+          <h3 className="text-2xl font-bold text-slate-900">
+            Start Your Job Hunt Journey
           </h3>
-          <p className="text-gray-500 text-sm mb-6">
-            Analyze your resume or add job applications to see insights
+
+          <p className="mx-auto mt-3 max-w-md text-slate-500">
+            Analyze your resume and track job applications to unlock
+            personalized career insights.
           </p>
+
           <Link
             href="/dashboard/analyze"
-            className="bg-sky-blue-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-sky-blue-700 transition inline-block"
+            className="mt-8 inline-flex rounded-xl bg-sky-600 px-6 py-3 text-white transition hover:bg-sky-700"
           >
-            Analyze Your Resume
+            Analyze Resume
           </Link>
         </div>
       )}
