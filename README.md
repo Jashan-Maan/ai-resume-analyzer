@@ -1,4 +1,4 @@
-# ✦ KIRA — AI Resume Analyzer
+# ✦ KIRA — AI Resume Analyzer And Job Tracker
 
 **Optimize your resume. Ace the ATS. Land the interview.**
 
