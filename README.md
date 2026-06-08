@@ -86,10 +86,14 @@ with actionable improvement suggestions — all in seconds.
 
 ### 🔐 Authentication
 
-- OAuth sign-in via **Google** and **GitHub** (NextAuth.js v5)
+- **Three sign-in methods:** Google OAuth, GitHub OAuth, and email/password credentials
+- **Email/password signup** with Zod-validated registration form (name, email, password, confirm password)
+- **Email verification** via 6-digit OTP code sent through Resend (10-minute expiry)
+- OTP input with auto-advance, backspace navigation, and paste support
 - JWT-based sessions — no server-side session store required
 - Middleware-protected routes: unauthenticated users are redirected to `/login`
-- Automatic user provisioning on first sign-in
+- Automatic user provisioning on first OAuth sign-in
+- Password hashing with bcrypt (12 salt rounds)
 
 ### 📄 Analysis History
 
@@ -119,11 +123,13 @@ with actionable improvement suggestions — all in seconds.
 | **Animations**     | [Framer Motion](https://www.framer.com/motion/)                                                    |
 | **Charts**         | [Recharts](https://recharts.org/)                                                                  |
 | **Icons**          | [Lucide React](https://lucide.dev/)                                                                |
-| **Auth**           | [NextAuth.js v5](https://authjs.dev/) (Google + GitHub OAuth)                                      |
+| **Auth**           | [NextAuth.js v5](https://authjs.dev/) (Google + GitHub OAuth + Credentials)                        |
 | **Database**       | [MongoDB Atlas](https://www.mongodb.com/atlas) via [Mongoose 9](https://mongoosejs.com/)           |
 | **AI**             | [Google Gemini API](https://ai.google.dev/) (2.5 Flash + 3.5 Flash)                                |
 | **Rate Limiting**  | [Upstash Redis](https://upstash.com/) + [@upstash/ratelimit](https://github.com/upstash/ratelimit) |
 | **PDF Parsing**    | [unpdf](https://github.com/nicolo-ribaudo/unpdf)                                                   |
+| **Email**          | [Resend](https://resend.com/) + [React Email](https://react.email/)                                |
+| **Password Hash**  | [bcryptjs](https://github.com/dcodeIO/bcrypt.js)                                                   |
 | **Validation**     | [Zod 4](https://zod.dev/)                                                                          |
 | **Date Utilities** | [date-fns](https://date-fns.org/)                                                                  |
 | **Font**           | [Geist](https://vercel.com/font) (Sans + Mono)                                                     |
@@ -151,14 +157,15 @@ with actionable improvement suggestions — all in seconds.
          ▼           ▼               ▼
    ┌──────────┐ ┌──────────┐ ┌────────────┐
    │ NextAuth │ │ API      │ │ Middleware  │
-   │ (OAuth)  │ │ Routes   │ │ (Auth)     │
+   │ (OAuth + │ │ Routes   │ │ (Auth)     │
+   │  Creds)  │ │          │ │            │
    └────┬─────┘ └────┬─────┘ └────────────┘
         │             │
-        ▼             ├──────────────┐
-   ┌──────────┐  ┌────▼─────┐  ┌────▼─────┐
-   │ MongoDB  │  │ Gemini   │  │ Upstash  │
-   │ Atlas    │  │ AI       │  │ Redis    │
-   └──────────┘  └──────────┘  └──────────┘
+        ▼             ├──────────────┬──────────────┐
+   ┌──────────┐  ┌────▼─────┐  ┌────▼─────┐  ┌────▼─────┐
+   │ MongoDB  │  │ Gemini   │  │ Upstash  │  │ Resend   │
+   │ Atlas    │  │ AI       │  │ Redis    │  │ Email    │
+   └──────────┘  └──────────┘  └──────────┘  └──────────┘
 ```
 
 **Data Flow — Resume Analysis:**
@@ -180,6 +187,15 @@ with actionable improvement suggestions — all in seconds.
 5. Gemini returns JSON with technical, behavioral, and project-based questions
 6. Client renders expandable question cards with tips and difficulty badges
 
+**Data Flow — Signup & Email Verification:**
+
+1. User submits name, email, password, and confirm password on `/signup`
+2. Server validates input with Zod, hashes password with bcrypt, generates a 6-digit OTP
+3. OTP is stored on the User document with a 10-minute expiry
+4. Verification email is sent via **Resend** using a **React Email** template
+5. User enters the 6-digit code on `/verify-email`
+6. Server verifies the code, marks the user as verified, and redirects to `/login`
+
 ---
 
 ## 📂 Project Structure
@@ -188,6 +204,7 @@ with actionable improvement suggestions — all in seconds.
 ai-resume-analyzer/
 ├── middleware.ts                 # Auth middleware — protects /dashboard routes
 ├── next.config.ts               # Next.js config (remote image patterns)
+├── tailwind.config.ts           # Tailwind CSS configuration
 ├── package.json
 ├── tsconfig.json
 ├── .env.example                 # Required environment variables template
@@ -198,7 +215,7 @@ ai-resume-analyzer/
 │   └── github.svg
 │
 └── src/
-    ├── auth.ts                  # NextAuth.js v5 configuration (Google + GitHub)
+    ├── auth.ts                  # NextAuth.js v5 config (Google + GitHub + Credentials)
     │
     ├── app/
     │   ├── globals.css          # Global styles + Tailwind base
@@ -206,8 +223,14 @@ ai-resume-analyzer/
     │   ├── page.tsx             # Landing page (Hero, Features, Testimonials, etc.)
     │   │
     │   ├── login/
-    │   │   ├── page.tsx         # OAuth sign-in page (Google + GitHub buttons)
-    │   │   └── actions.ts       # Server actions for sign-in
+    │   │   ├── page.tsx         # Sign-in page (credentials form + OAuth buttons)
+    │   │   └── actions.ts       # Server actions for OAuth sign-in
+    │   │
+    │   ├── signup/
+    │   │   └── page.tsx         # Registration page (name, email, password form + OAuth)
+    │   │
+    │   ├── verify-email/
+    │   │   └── page.tsx         # 6-digit OTP verification page
     │   │
     │   ├── dashboard/
     │   │   ├── layout.tsx       # Dashboard shell (sidebar + main content)
@@ -225,8 +248,12 @@ ai-resume-analyzer/
     │   │
     │   └── api/
     │       ├── auth/
-    │       │   └── [...nextauth]/
-    │       │       └── route.ts # NextAuth API route handler
+    │       │   ├── [...nextauth]/
+    │       │   │   └── route.ts # NextAuth API route handler
+    │       │   ├── signup/
+    │       │   │   └── route.ts # POST: register new user + send verification email
+    │       │   └── verify-email/
+    │       │       └── route.ts # POST: verify 6-digit OTP code
     │       ├── analyze/
     │       │   └── route.ts     # POST: analyze resume / GET: fetch analyses
     │       ├── interview/
@@ -240,6 +267,10 @@ ai-resume-analyzer/
     │
     ├── components/
     │   ├── ui/                  # shadcn/ui primitives (Button, Card, Badge, etc.)
+    │   ├── auth/                # Authentication components
+    │   │   └── CredentialsForm.tsx # Email/password login form
+    │   ├── email/               # Email templates (React Email)
+    │   │   └── VerificationEmail.tsx # OTP verification email template
     │   ├── shared/              # Landing page components
     │   │   ├── Navbar.tsx       # Landing page navigation bar
     │   │   ├── Hero.tsx         # Hero section with CTA
@@ -263,22 +294,31 @@ ai-resume-analyzer/
     │       ├── StatusBadge.tsx  # Colored status badge component
     │       └── SignOutButton.tsx # Sign-out button for profile page
     │
+    ├── helper/
+    │   └── verifyCode.ts       # OTP generation + expiry utilities
+    │
     ├── lib/
     │   ├── ai.ts               # Gemini AI integration (analysis + interview questions)
     │   ├── dbConnect.ts        # MongoDB connection singleton
     │   ├── pdfParser.ts        # PDF text extraction using unpdf
     │   ├── rateLimiter.ts      # Upstash Redis rate limiters (analyze, interview, jobs)
+    │   ├── resend.ts           # Resend email client singleton
     │   └── utils.ts            # Utility functions (cn helper)
     │
     ├── models/
-    │   ├── User.ts             # User model (name, email, image, role, analysisCount)
+    │   ├── User.ts             # User model (name, email, password, verification, etc.)
     │   ├── Analysis.ts         # Analysis model (ATS score, strengths, weaknesses, etc.)
     │   └── Job.ts              # Job model (company, role, status, jobDescription, notes)
     │
     ├── schemas/
+    │   ├── AuthSchema.ts       # Zod validation schemas for signup
     │   └── JobSchema.ts        # Zod validation schemas for job CRUD
     │
+    ├── services/
+    │   └── email.ts            # Email sending service (verification emails via Resend)
+    │
     └── types/
+        ├── ApiResponse.ts      # Shared API response interface
         └── next-auth.d.ts      # NextAuth type augmentation (adds user.id to session)
 ```
 
@@ -297,6 +337,7 @@ ai-resume-analyzer/
 | **GitHub Developer Settings** | OAuth App credentials               |
 | **Google AI Studio**          | Gemini API key                      |
 | **Upstash**                   | Redis database (free tier works)    |
+| **Resend**                    | Email API key (free tier works)     |
 
 ### Installation
 
@@ -341,6 +382,9 @@ GEMINI_API_KEY=your_gemini_api_key
 # Upstash Redis — get credentials from https://console.upstash.com
 UPSTASH_REDIS_REST_URL=your_redis_rest_url
 UPSTASH_REDIS_REST_TOKEN=your_redis_rest_token
+
+# Resend Email — get your API key from https://resend.com
+RESEND_API_KEY=your_resend_api_key
 ```
 
 **📌 Setting Up OAuth Providers (step-by-step)**
@@ -376,13 +420,20 @@ UPSTASH_REDIS_REST_TOKEN=your_redis_rest_token
 3. Copy the **REST URL** and **REST Token** from the database details page
 4. Paste them into your `.env` as `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
 
+#### Resend Email
+
+1. Go to [Resend Dashboard](https://resend.com/)
+2. Create an account and generate an **API Key**
+3. Copy the key into your `.env` as `RESEND_API_KEY`
+4. (Optional) Add and verify a custom sending domain for production use
+
 ### Running the Development Server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser. You'll see the landing page — click **Get Started** to sign in.
+Open [http://localhost:3000](http://localhost:3000) in your browser. You'll see the landing page — click **Get Started** to sign in or **Sign up free** to create an account.
 
 | Command         | Description                                |
 | --------------- | ------------------------------------------ |
@@ -395,7 +446,62 @@ Open [http://localhost:3000](http://localhost:3000) in your browser. You'll see 
 
 ## 📡 API Reference
 
-All API routes are protected by NextAuth.js session authentication. Unauthorized requests return `401`. Rate-limited requests return `429`.
+All API routes are protected by NextAuth.js session authentication (except signup and verify-email). Unauthorized requests return `401`. Rate-limited requests return `429`.
+
+### Authentication
+
+#### `POST /api/auth/signup`
+
+Register a new user with email and password. Sends a 6-digit OTP verification email via Resend.
+
+| Field             | Type     | Required | Description                        |
+| ----------------- | -------- | -------- | ---------------------------------- |
+| `name`            | `string` | ✅       | Full name (min 2 characters)       |
+| `email`           | `string` | ✅       | Valid email address                |
+| `password`        | `string` | ✅       | Password (min 6 characters)        |
+| `confirmPassword` | `string` | ✅       | Must match `password`              |
+
+**Content-Type:** `application/json`
+
+**Response** `201 Created`:
+
+```json
+{
+  "success": true,
+  "message": "Account created! Please check your email to verify your account."
+}
+```
+
+**Error** `400 Bad Request`:
+
+```json
+{
+  "success": false,
+  "message": "Email already registered"
+}
+```
+
+#### `POST /api/auth/verify-email`
+
+Verify a user's email with the 6-digit OTP code.
+
+| Field   | Type     | Required | Description                |
+| ------- | -------- | -------- | -------------------------- |
+| `email` | `string` | ✅       | User's email address       |
+| `code`  | `string` | ✅       | 6-digit verification code  |
+
+**Content-Type:** `application/json`
+
+**Response** `200 OK`:
+
+```json
+{
+  "success": true,
+  "message": "Account verified successfully! You can now log in."
+}
+```
+
+---
 
 ### Resume Analysis
 
@@ -594,15 +700,19 @@ Delete a job application. Only the job owner can delete it.
 
 ### User
 
-| Field           | Type                | Description                                 |
-| --------------- | ------------------- | ------------------------------------------- |
-| `name`          | `String`            | User's display name                         |
-| `email`         | `String`            | Unique, lowercase, validated email          |
-| `image`         | `String?`           | Profile picture URL (from OAuth provider)   |
-| `role`          | `"user" \| "admin"` | User role (defaults to `"user"`)            |
-| `analysisCount` | `Number`            | Total analyses performed (auto-incremented) |
-| `createdAt`     | `Date`              | Auto-generated timestamp                    |
-| `updatedAt`     | `Date`              | Auto-generated timestamp                    |
+| Field              | Type                | Description                                              |
+| ------------------ | ------------------- | -------------------------------------------------------- |
+| `name`             | `String`            | User's display name                                      |
+| `email`            | `String`            | Unique, lowercase, validated email                       |
+| `password`         | `String?`           | Hashed password (absent for OAuth-only accounts)         |
+| `image`            | `String?`           | Profile picture URL (from OAuth provider)                |
+| `role`             | `"user" \| "admin"` | User role (defaults to `"user"`)                         |
+| `analysisCount`    | `Number`            | Total analyses performed (auto-incremented)              |
+| `isVerified`       | `Boolean`           | Whether the user's email is verified (defaults to false) |
+| `verifyCode`       | `String?`           | 6-digit OTP code for email verification                  |
+| `verifyCodeExpiry` | `Date?`             | OTP expiry timestamp (10 minutes from generation)        |
+| `createdAt`        | `Date`              | Auto-generated timestamp                                 |
+| `updatedAt`        | `Date`              | Auto-generated timestamp                                 |
 
 ### Analysis
 
@@ -635,15 +745,38 @@ Delete a job application. Only the job owner can delete it.
 
 ## 🔐 Authentication
 
-KIRA uses [NextAuth.js v5 (Auth.js)](https://authjs.dev/) with the **JWT strategy**:
+KIRA uses [NextAuth.js v5 (Auth.js)](https://authjs.dev/) with the **JWT strategy** and supports three authentication methods:
 
-- **Providers:** Google OAuth 2.0 and GitHub OAuth
+### OAuth Providers
+
+- **Google OAuth 2.0** — sign in with your Google account
+- **GitHub OAuth** — sign in with your GitHub account
+- OAuth users are automatically verified (`isVerified: true`) and provisioned in MongoDB on first sign-in
+
+### Credentials (Email/Password)
+
+- Users can register with name, email, and password via the `/signup` page
+- Passwords are hashed with **bcrypt** (12 salt rounds) before storage
+- Registration requires **email verification** via a 6-digit OTP sent through **Resend**
+- OTP codes expire after **10 minutes**
+- Unverified users cannot sign in until they complete email verification
+- The OTP input supports auto-advance, backspace navigation, and clipboard paste
+
+### Session & Middleware
+
 - **Session handling:** JWT tokens stored in HTTP-only cookies (no database sessions)
 - **Middleware:** The `middleware.ts` file intercepts requests:
   - `/dashboard/*` routes → redirect to `/login` if unauthenticated
   - `/login` → redirect to `/dashboard` if already authenticated
-- **User provisioning:** On first sign-in, a new `User` document is created in MongoDB automatically
 - **Type safety:** NextAuth session types are augmented in `src/types/next-auth.d.ts` to include `user.id`
+
+### Validation
+
+- Signup input is validated with Zod (`src/schemas/AuthSchema.ts`):
+  - Name: min 2 characters
+  - Email: valid email format
+  - Password: min 6 characters
+  - Confirm password: must match password
 
 ---
 
@@ -701,7 +834,8 @@ KIRA uses [Upstash Redis](https://upstash.com/) with the `@upstash/ratelimit` pa
 3. Add all environment variables from `.env` to the Vercel project settings
 4. Update `NEXTAUTH_URL` to your production domain
 5. Update OAuth redirect URIs in Google Cloud Console and GitHub Developer Settings to point to your production domain
-6. Deploy
+6. Add and verify a sending domain in Resend for production email delivery
+7. Deploy
 
 ### Other Platforms
 
