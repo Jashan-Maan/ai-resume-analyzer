@@ -2,7 +2,7 @@
 
 **Optimize your resume. Ace the ATS. Land the interview.**
 
-An AI-powered resume analysis platform built with Next.js 16, Google Gemini, and MongoDB.
+Kira is an AI-powered resume analysis and job tracking platform built with Next.js 16, Google Gemini, and MongoDB.
 Upload your resume, paste a job description, and get an instant ATS compatibility score
 with actionable improvement suggestions — all in seconds.
 
@@ -110,23 +110,23 @@ with actionable improvement suggestions — all in seconds.
 
 ## 🛠 Tech Stack
 
-| Layer              | Technology                                                                               |
-| ------------------ | ---------------------------------------------------------------------------------------- |
-| **Framework**      | [Next.js 16](https://nextjs.org/) (App Router, React Server Components)                  |
-| **Language**       | [TypeScript 5](https://www.typescriptlang.org/)                                          |
-| **Styling**        | [Tailwind CSS 4](https://tailwindcss.com/)                                               |
-| **UI Components**  | [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)              |
-| **Animations**     | [Framer Motion](https://www.framer.com/motion/)                                          |
-| **Charts**         | [Recharts](https://recharts.org/)                                                        |
-| **Icons**          | [Lucide React](https://lucide.dev/)                                                      |
-| **Auth**           | [NextAuth.js v5](https://authjs.dev/) (Google + GitHub OAuth)                            |
-| **Database**       | [MongoDB Atlas](https://www.mongodb.com/atlas) via [Mongoose 9](https://mongoosejs.com/) |
-| **AI**             | [Google Gemini API](https://ai.google.dev/) (2.5 Flash + 3.5 Flash)                      |
+| Layer              | Technology                                                                                         |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| **Framework**      | [Next.js 16](https://nextjs.org/) (App Router, React Server Components)                            |
+| **Language**       | [TypeScript 5](https://www.typescriptlang.org/)                                                    |
+| **Styling**        | [Tailwind CSS 4](https://tailwindcss.com/)                                                         |
+| **UI Components**  | [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)                        |
+| **Animations**     | [Framer Motion](https://www.framer.com/motion/)                                                    |
+| **Charts**         | [Recharts](https://recharts.org/)                                                                  |
+| **Icons**          | [Lucide React](https://lucide.dev/)                                                                |
+| **Auth**           | [NextAuth.js v5](https://authjs.dev/) (Google + GitHub OAuth)                                      |
+| **Database**       | [MongoDB Atlas](https://www.mongodb.com/atlas) via [Mongoose 9](https://mongoosejs.com/)           |
+| **AI**             | [Google Gemini API](https://ai.google.dev/) (2.5 Flash + 3.5 Flash)                                |
 | **Rate Limiting**  | [Upstash Redis](https://upstash.com/) + [@upstash/ratelimit](https://github.com/upstash/ratelimit) |
-| **PDF Parsing**    | [unpdf](https://github.com/nicolo-ribaudo/unpdf)                                         |
-| **Validation**     | [Zod 4](https://zod.dev/)                                                                |
-| **Date Utilities** | [date-fns](https://date-fns.org/)                                                        |
-| **Font**           | [Geist](https://vercel.com/font) (Sans + Mono)                                           |
+| **PDF Parsing**    | [unpdf](https://github.com/nicolo-ribaudo/unpdf)                                                   |
+| **Validation**     | [Zod 4](https://zod.dev/)                                                                          |
+| **Date Utilities** | [date-fns](https://date-fns.org/)                                                                  |
+| **Font**           | [Geist](https://vercel.com/font) (Sans + Mono)                                                     |
 
 ---
 
@@ -464,10 +464,10 @@ Fetch the authenticated user's last 10 analyses.
 
 Upload a resume PDF to generate AI-powered mock interview questions.
 
-| Parameter        | Type         | Required | Description                                        |
-| ---------------- | ------------ | -------- | -------------------------------------------------- |
-| `resume`         | `File` (PDF) | ✅       | Resume file (max 4 MB, PDF only)                   |
-| `jobDescription` | `string`     | ❌       | Job description for role-specific questions         |
+| Parameter        | Type         | Required | Description                                 |
+| ---------------- | ------------ | -------- | ------------------------------------------- |
+| `resume`         | `File` (PDF) | ✅       | Resume file (max 4 MB, PDF only)            |
+| `jobDescription` | `string`     | ❌       | Job description for role-specific questions |
 
 **Content-Type:** `multipart/form-data`
 **Rate Limit:** 5 requests per 3 hours per user
@@ -679,10 +679,10 @@ Used in `generateInterviewQuestions()` for generating tailored interview prep:
 
 KIRA uses [Upstash Redis](https://upstash.com/) with the `@upstash/ratelimit` package to protect API routes from abuse:
 
-| Route              | Limit                     | Strategy        |
-| ------------------ | ------------------------- | --------------- |
-| `POST /api/analyze`   | 5 requests per 3 hours | Sliding window  |
-| `POST /api/interview` | 5 requests per 3 hours | Sliding window  |
+| Route                 | Limit                   | Strategy       |
+| --------------------- | ----------------------- | -------------- |
+| `POST /api/analyze`   | 5 requests per 3 hours  | Sliding window |
+| `POST /api/interview` | 5 requests per 3 hours  | Sliding window |
 | `GET/POST /api/jobs`  | 100 requests per 15 min | Sliding window |
 
 - Rate limits are applied **per authenticated user** (keyed by user ID)
