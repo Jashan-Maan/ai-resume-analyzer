@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
+import { generateOTP, generateOTPExpiry } from "@/helper/verifyCode";
+import { sendVerificationEmail } from "@/services/email";
+import { success } from "zod";
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,7 +52,46 @@ export async function POST(req: NextRequest) {
 
     // Email not verified
     if (!user.isVerified) {
-        
+      const now = new Date();
+      const isExpired = !user.verifyCodeExpiry || now > user.verifyCodeExpiry;
+
+      if (isExpired) {
+        const newCode = generateOTP();
+        const newExpiry = generateOTPExpiry();
+
+        user.verifyCode = newCode;
+        user.verifyCodeExpiry = newExpiry;
+        await user.save();
+
+        const emailResult = await sendVerificationEmail(
+          email,
+          user.name,
+          newCode,
+        );
+
+        if (!emailResult.success) {
+          return NextResponse.json(
+            {
+              success: false,
+              message: "Failed to send Verification email. Please try again",
+            },
+            {
+              status: 500,
+            },
+          );
+        }
+        return NextResponse.json(
+          {
+            success: false,
+            message:
+              "Your verification code expired. We sent a new code to your email.",
+            needsVerification: true,
+            email,
+          },
+          { status: 400 },
+        );
+      }
+
       return NextResponse.json(
         {
           success: false,

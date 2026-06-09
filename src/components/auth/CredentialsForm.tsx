@@ -14,11 +14,13 @@ export default function CredentialsForm() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [verifyEmail, setVerifyEmail] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setVerifyEmail("");
 
     try {
       // ✅ Step 1 — Pre-validate with our own API before NextAuth
@@ -32,6 +34,9 @@ export default function CredentialsForm() {
 
       if (!checkData.success) {
         setError(checkData.message);
+        if (checkData.needsVerification) {
+          setVerifyEmail(checkData.email || form.email);
+        }
         return;
       }
 
@@ -83,12 +88,13 @@ export default function CredentialsForm() {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+        <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 space-y-2">
           <p className="text-red-600 text-sm">{error}</p>
-          {error.includes("verify") && (
+
+          {verifyEmail && (
             <Link
-              href={`/verify-email?email=${encodeURIComponent(form.email)}`}
-              className="text-sky-blue-600 text-xs hover:underline block mt-1"
+              href={`/verify-email?email=${encodeURIComponent(verifyEmail)}`}
+              className="inline-flex items-center gap-1 text-sky-blue-600 text-xs font-medium hover:underline"
             >
               Enter verification code →
             </Link>

@@ -14,6 +14,28 @@ export default function VerifyEmailPage() {
   const [error, setError] = useState("");
   const [resending, setResending] = useState(false);
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendMessage, setResendMessage] = useState("");
+
+  const handleResend = async () => {
+    setResendLoading(true);
+    setResendMessage("");
+
+    try {
+      const res = await fetch("/api/auth/resend-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+      setResendMessage(data.message);
+    } catch {
+      setResendMessage("Failed to resend. Please try again.");
+    } finally {
+      setResendLoading(false);
+    }
+  };
 
   // Auto focus first input
   useEffect(() => {
@@ -142,6 +164,26 @@ export default function VerifyEmailPage() {
         </Button>
 
         <p className="text-xs text-gray-400">Code expires in 10 minutes</p>
+        <div className="mt-4">
+          <p className="text-xs text-gray-400 mb-2">Didn't receive the code?</p>
+          <button
+            onClick={handleResend}
+            disabled={resendLoading}
+            className="text-violet-600 text-xs hover:underline disabled:opacity-50 flex items-center gap-1 mx-auto"
+          >
+            {resendLoading ? (
+              <>
+                <Loader2 size={12} className="animate-spin" />
+                Sending...
+              </>
+            ) : (
+              "Resend verification code"
+            )}
+          </button>
+          {resendMessage && (
+            <p className="text-xs text-green-600 mt-2">{resendMessage}</p>
+          )}
+        </div>
       </div>
     </div>
   );
