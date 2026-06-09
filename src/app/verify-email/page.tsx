@@ -169,7 +169,7 @@ export default function VerifyEmailPage() {
           <button
             onClick={handleResend}
             disabled={resendLoading}
-            className="text-violet-600 text-xs hover:underline disabled:opacity-50 flex items-center gap-1 mx-auto"
+            className="text-sky-blue-600 text-xs hover:underline disabled:opacity-50 flex items-center gap-1 mx-auto"
           >
             {resendLoading ? (
               <>
