@@ -1,3 +1,4 @@
+// src/components/auth/CredentialsForm.tsx
 "use client";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
@@ -20,6 +21,21 @@ export default function CredentialsForm() {
     setError("");
 
     try {
+      // ✅ Step 1 — Pre-validate with our own API before NextAuth
+      const checkRes = await fetch("/api/auth/check-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
+
+      const checkData = await checkRes.json();
+
+      if (!checkData.success) {
+        setError(checkData.message);
+        return;
+      }
+
+      // ✅ Step 2 — If pre-check passes, then sign in with NextAuth
       const result = await signIn("credentials", {
         email: form.email,
         password: form.password,
@@ -27,7 +43,7 @@ export default function CredentialsForm() {
       });
 
       if (result?.error) {
-        setError(result.error);
+        setError("Invalid credentials. Please try again.");
         return;
       }
 
@@ -55,9 +71,7 @@ export default function CredentialsForm() {
       </div>
 
       <div className="space-y-1.5">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
-        </div>
+        <Label htmlFor="password">Password</Label>
         <Input
           id="password"
           type="password"
@@ -71,7 +85,6 @@ export default function CredentialsForm() {
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
           <p className="text-red-600 text-sm">{error}</p>
-          {/* Help user if email not verified */}
           {error.includes("verify") && (
             <Link
               href={`/verify-email?email=${encodeURIComponent(form.email)}`}

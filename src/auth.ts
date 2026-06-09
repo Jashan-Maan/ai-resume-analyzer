@@ -22,45 +22,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password required");
-        }
+        if (!credentials?.email || !credentials?.password) return null;
 
-        await dbConnect();
+        try {
+          await dbConnect();
 
-        const user = await User.findOne({ email: credentials.email });
+          const user = await User.findOne({ email: credentials.email });
 
-        if (!user) {
-          throw new Error("No account found with this email");
-        }
+          if (!user || !user.password || !user.isVerified) return null;
 
-        if (!user.password) {
-          throw new Error(
-            "This account uses Google/GitHub login. Please sign in with that.",
+          const isValid = await bcrypt.compare(
+            credentials.password as string,
+            user.password,
           );
+
+          if (!isValid) return null;
+
+          return {
+            id: user._id.toString(),
+            name: user.name,
+            email: user.email,
+            image: user.image,
+          };
+        } catch (error) {
+          console.error("Authorize error:", error);
+          return null;
         }
-
-        if (!user.isVerified) {
-          throw new Error(
-            "Please verify your email first. Check your inbox for the code.",
-          );
-        }
-
-        const isValid = await bcrypt.compare(
-          credentials.password as string,
-          user.password,
-        );
-
-        if (!isValid) {
-          throw new Error("Incorrect password");
-        }
-
-        return {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-          image: user.image,
-        };
       },
     }),
   ],

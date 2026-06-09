@@ -46,7 +46,7 @@ export async function sendVerificationEmail(
       html: `
         <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
           
-          <h2 style="color: #7c3aed; margin-bottom: 8px;">
+          <h2 style="color: #0099ff; margin-bottom: 8px;">
             Welcome to Kira, ${username}! 
           </h2>
           
@@ -56,18 +56,18 @@ export async function sendVerificationEmail(
           </p>
 
           <div style="
-            background: #f5f3ff;
-            border: 2px solid #7c3aed;
+            background: #e5f5ff;
+            border: 2px solid #0099ff;
             border-radius: 12px;
             padding: 24px;
             text-align: center;
             margin-bottom: 24px;
           ">
-            <p style="color: #6d28d9; font-size: 13px; margin: 0 0 8px;">
+            <p style="color: #0099ff; font-size: 13px; margin: 0 0 8px;">
               Verification Code
             </p>
             <p style="
-              color: #4c1d95;
+              color: #0099ff;
               font-size: 40px;
               font-weight: bold;
               letter-spacing: 8px;
