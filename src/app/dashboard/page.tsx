@@ -69,7 +69,7 @@ export default async function DashboardPage() {
             href="/dashboard/analyze"
             className="inline-flex items-center justify-center rounded-xl bg-linear-to-r from-sky-600 to-blue-600 px-5 py-3 font-medium text-white shadow-lg shadow-sky-500/20 transition hover:scale-105"
           >
-            ✦ Analyze Resume
+            Analyze Resume
           </Link>
         </div>
       </div>
