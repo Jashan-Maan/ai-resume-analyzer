@@ -38,17 +38,6 @@ const Hero = () => {
 
       <div className="relative max-w-7xl mx-auto px-6">
         <div className="text-center max-w-4xl mx-auto">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            custom={0}
-            variants={fadeUp}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-blue-50 border border-sky-blue-100 text-sky-blue-700 text-sm font-medium mb-8"
-          >
-            <Sparkles className="w-4 h-4" />
-            Powered by Google Gemini AI
-          </motion.div>
-
           <motion.h1
             initial="hidden"
             animate="visible"

@@ -16,7 +16,7 @@ const steps = [
     icon: Brain,
     title: "AI Analyzes It",
     description:
-      "Our Gemini AI engine parses every detail — skills, experience, formatting, keywords, and more.",
+      "Our AI engine parses every detail — skills, experience, formatting, keywords, and more.",
   },
   {
     step: "03",

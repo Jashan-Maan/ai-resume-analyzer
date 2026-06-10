@@ -24,7 +24,7 @@ const features = [
     icon: Sparkles,
     title: "AI-Powered Insights",
     description:
-      "Receive intelligent suggestions powered by Google Gemini AI to optimize every section of your resume.",
+      "Receive intelligent suggestions powered by AI to optimize every section of your resume.",
     color: "from-amber-500 to-orange-600",
     bg: "bg-amber-50",
     iconColor: "text-amber-600",
