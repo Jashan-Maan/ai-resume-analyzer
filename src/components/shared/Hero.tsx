@@ -9,6 +9,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { fadeUp, scaleIn } from "@/app/page";
+import { useSession } from "next-auth/react";
 
 interface fadeUpProps {
   hidden: { opacity: number; y: number };
@@ -24,6 +25,9 @@ interface fadeUpProps {
 }
 
 const Hero = () => {
+  const { status } = useSession();
+  const isLoggedIn = status === "authenticated";
+
   return (
     <section className="relative pt-32 pb-20 md:pt-44 md:pb-32">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -78,10 +82,10 @@ const Hero = () => {
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link
-              href="/login"
+              href={isLoggedIn ? "/dashboard/analyze" : "/signup"}
               className="group inline-flex items-center gap-2 text-base font-semibold text-white bg-linear-to-r from-sky-blue-600 to-sky-blue-500 hover:from-sky-blue-700 hover:to-sky-blue-600 px-8 py-4 rounded-2xl transition-all shadow-xl shadow-sky-blue-500/25 hover:shadow-sky-blue-500/40 hover:-translate-y-0.5"
             >
-              Analyze Your Resume
+              {isLoggedIn ? "Go to Dashboard" : "Analyze Your Resume"}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <a

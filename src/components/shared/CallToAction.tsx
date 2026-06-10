@@ -3,8 +3,11 @@ import { fadeUp } from "@/app/page";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 const CallToAction = () => {
+  const { status } = useSession();
+  const isLoggedIn = status === "authenticated";
   return (
     <section className="py-24 md:py-32">
       <div className="max-w-4xl mx-auto px-6">
@@ -29,10 +32,10 @@ const CallToAction = () => {
               Kira&apos;s AI‑powered resume analysis.
             </p>
             <Link
-              href="/signup"
+              href={isLoggedIn ? "/dashboard" : "/signup"}
               className="group inline-flex items-center gap-2 bg-white text-sky-blue-700 font-semibold px-8 py-4 rounded-2xl hover:bg-sky-blue-50 transition-all shadow-lg hover:-translate-y-0.5"
             >
-              Get Started — It&apos;s Free
+              {isLoggedIn ? "Go to Dashboard" : "Get Started — It's Free"}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
