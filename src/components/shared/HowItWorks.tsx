@@ -1,3 +1,4 @@
+"use client";
 import { fadeUp } from "@/app/page";
 import { motion } from "framer-motion";
 import { Upload, Brain, CheckCircle } from "lucide-react";

@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -41,7 +42,7 @@ const Navbar = () => {
             Log in
           </Link>
           <Link
-            href="/login"
+            href="/signup"
             className="text-sm font-medium text-white bg-linear-to-r from-sky-blue-600 to-sky-blue-500 hover:from-sky-blue-700 hover:to-sky-blue-600 px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-sky-blue-500/25 hover:shadow-sky-blue-500/40"
           >
             Get Started

@@ -1,3 +1,4 @@
+"use client";
 import { fadeUp } from "@/app/page";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -28,7 +29,7 @@ const CallToAction = () => {
               Kira&apos;s AI‑powered resume analysis.
             </p>
             <Link
-              href="/login"
+              href="/signup"
               className="group inline-flex items-center gap-2 bg-white text-sky-blue-700 font-semibold px-8 py-4 rounded-2xl hover:bg-sky-blue-50 transition-all shadow-lg hover:-translate-y-0.5"
             >
               Get Started — It&apos;s Free
