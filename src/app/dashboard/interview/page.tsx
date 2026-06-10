@@ -94,21 +94,6 @@ export default function InterviewPage() {
         </div>
       </div>
 
-      {/* Info Banner */}
-      <div className="bg-sky-blue-50 border border-sky-blue-200 rounded-xl px-4 py-3 flex items-start gap-3">
-        <span className="text-sky-blue-600 text-lg">🤖</span>
-        <div>
-          <p className="text-sm font-medium text-sky-blue-800">
-            Powered by Gemini
-          </p>
-          <p className="text-xs text-sky-blue-600 mt-0.5">
-            Google's most advanced model generates personalized questions based
-            on your actual resume and the job description. Includes technical,
-            behavioral, and project-specific questions.
-          </p>
-        </div>
-      </div>
-
       {/* Form */}
       <div className="bg-white rounded-xl border p-6 space-y-5">
         {/* File Upload */}
@@ -164,7 +149,7 @@ export default function InterviewPage() {
                 Generating questions... (may take 15-20 seconds)
               </>
             ) : (
-              <>✦ Generate Interview Questions</>
+              <> Generate Interview Questions</>
             )}
           </Button>
 
@@ -186,7 +171,7 @@ export default function InterviewPage() {
           <div className="space-y-2">
             {[
               "Upload your resume PDF and paste the job description",
-              "Gemini 2.5 Pro analyzes both to generate relevant questions",
+              "LLM model analyzes both to generate relevant questions",
               "You get 5 technical, 3 behavioral, and 3 project-based questions",
               "Expand each question to see tips on how to answer",
               "Practice answering out loud before your real interview",
