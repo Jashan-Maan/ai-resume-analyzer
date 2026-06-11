@@ -28,7 +28,6 @@ export default function AnalyzePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<AnalysisData | null>(null);
-  const [remaining, setRemaining] = useState<number | null>(null);
 
   const handleAnalyze = async () => {
     if (!file) {
@@ -62,7 +61,7 @@ export default function AnalyzePage() {
         return;
       }
 
-      if (res.status === 503) {
+      if (res.status === 503 || res.status === 500) {
         setError("AI is currently busy. Please try again later.");
         toast.error("AI is currently busy. Please try again later.");
         return;
@@ -75,7 +74,6 @@ export default function AnalyzePage() {
       }
 
       setResult(data.data);
-      setRemaining(data.remaining);
       toast.success("Resume analyzed successfully!");
 
       setTimeout(() => {
@@ -180,11 +178,6 @@ export default function AnalyzePage() {
             </Button>
           )}
         </div>
-        {remaining !== null && (
-          <p className="text-xs text-gray-400 text-center">
-            {remaining} analyses remaining this hour
-          </p>
-        )}
       </div>
 
       {/* Results */}

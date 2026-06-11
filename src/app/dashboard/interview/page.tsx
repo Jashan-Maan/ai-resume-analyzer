@@ -61,7 +61,7 @@ export default function InterviewPage() {
         return;
       }
 
-      if (res.status === 503) {
+      if (res.status === 503 || res.status === 500) {
         setError("AI is currently busy. Please try again later.");
         toast.error("AI is currently busy. Please try again later.");
         return;
