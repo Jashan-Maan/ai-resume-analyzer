@@ -64,7 +64,7 @@ function QuestionCard({
         onClick={() => setOpen(!open)}
         className="w-full flex items-start gap-3 p-4 text-left hover:bg-gray-50 transition"
       >
-        <span className="bg-violet-100 text-violet-600 text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+        <span className="bg-sky-blue-100 text-sky-blue-600 text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5">
           {number}
         </span>
         <span className="text-sm font-medium text-gray-800 flex-1">
@@ -100,8 +100,8 @@ export default function InterviewResult({ data }: InterviewResultProps) {
           </p>
           <p className="text-xs text-gray-500 mt-1">Behavioral</p>
         </div>
-        <div className="bg-violet-50 rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold text-violet-600">
+        <div className="bg-sky-blue-50 rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold text-sky-blue-600">
             {data.projectBased.length}
           </p>
           <p className="text-xs text-gray-500 mt-1">Project Based</p>
@@ -169,7 +169,7 @@ export default function InterviewResult({ data }: InterviewResultProps) {
       {/* Project Based Questions */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2 text-violet-600">
+          <CardTitle className="text-base flex items-center gap-2 text-sky-blue-600">
             <FolderGit2 size={16} />
             Project Based Questions
           </CardTitle>
@@ -178,7 +178,7 @@ export default function InterviewResult({ data }: InterviewResultProps) {
           {data.projectBased.map((q, i) => (
             <QuestionCard key={i} number={i + 1} question={q.question}>
               <div className="mt-3 flex items-center gap-2">
-                <span className="text-xs text-violet-600 bg-violet-50 border border-violet-200 rounded-full px-2 py-0.5">
+                <span className="text-xs text-sky-blue-600 bg-sky-blue-50 border border-sky-blue-200 rounded-full px-2 py-0.5">
                   📁 {q.project}
                 </span>
               </div>

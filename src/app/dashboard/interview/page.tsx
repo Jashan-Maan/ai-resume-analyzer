@@ -4,6 +4,7 @@ import { MessageSquare, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FileUpload from "@/components/dashboard/FileUpload";
 import InterviewResult from "@/components/dashboard/InterviewResult";
+import { toast } from "sonner";
 
 interface InterviewData {
   technical: {
@@ -30,6 +31,7 @@ export default function InterviewPage() {
 
   const handleGenerate = async () => {
     if (!file) {
+      toast.error("Please upload your resume first");
       setError("Please upload your resume first");
       return;
     }
@@ -37,6 +39,8 @@ export default function InterviewPage() {
     setLoading(true);
     setError("");
     setResult(null);
+
+    const loadingToast = toast.loading("Generating interview questions...");
 
     try {
       const formData = new FormData();
@@ -49,15 +53,24 @@ export default function InterviewPage() {
       });
 
       const data = await res.json();
+      toast.dismiss(loadingToast);
+
+      if (data.status === 503) {
+        setError("AI is currently busy, please try again later");
+        toast.error("AI is currently busy, please try again later");
+        return;
+      }
 
       if (!data.success) {
         setError(
           data.message || "Failed to generate questions. Please try again.",
         );
+        toast.error(data.message || "Failed to generate questions");
         return;
       }
 
       setResult(data.data);
+      toast.success("Interview questions generated!");
 
       setTimeout(() => {
         document.getElementById("results")?.scrollIntoView({
@@ -65,6 +78,8 @@ export default function InterviewPage() {
         });
       }, 100);
     } catch (err) {
+      toast.dismiss(loadingToast);
+      toast.error("Something went wrong. Please try again.");
       setError("Something went wrong. Please try again.");
       console.error(err);
     } finally {
