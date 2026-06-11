@@ -1,9 +1,9 @@
-// src/app/dashboard/jobs/page.tsx
 "use client";
 import { useState, useEffect } from "react";
 import JobTable from "@/components/dashboard/JobTable";
 import AddJobModal from "@/components/dashboard/AddJobModal";
 import { Briefcase } from "lucide-react";
+import { toast } from "sonner";
 
 interface Job {
   _id: string;
@@ -39,10 +39,12 @@ export default function JobsPage() {
 
   const handleJobAdded = (newJob: Job) => {
     setJobs([newJob, ...jobs]);
+    toast.success("Job application added!");
   };
 
   const handleDelete = (id: string) => {
     setJobs(jobs.filter((job) => job._id !== id));
+    toast.success("Job application deleted");
   };
 
   const handleStatusChange = (id: string, status: string) => {
@@ -51,11 +53,13 @@ export default function JobsPage() {
         job._id === id ? { ...job, status: status as Job["status"] } : job,
       ),
     );
+    toast.success(`Status updated to ${status}`);
   };
 
   // ✅ handles full edit including status
   const handleEdit = (id: string, data: Partial<Job>) => {
     setJobs(jobs.map((job) => (job._id === id ? { ...job, ...data } : job)));
+    toast.success("Job application updated!");
   };
 
   const filteredJobs =

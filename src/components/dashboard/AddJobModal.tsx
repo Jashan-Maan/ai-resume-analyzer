@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 
 interface AddJobModalProps {
   onJobAdded: (job: any) => void;
@@ -55,6 +56,7 @@ export default function AddJobModal({ onJobAdded }: AddJobModalProps) {
 
       if (!data.success) {
         setError(data.message || "Something went wrong");
+        toast.error(data.message || "Failed to add job");
         return;
       }
 
@@ -70,6 +72,7 @@ export default function AddJobModal({ onJobAdded }: AddJobModalProps) {
       });
     } catch (err) {
       setError("Failed to add job. Try again.");
+      toast.error("Failed to add job. Try again.");
     } finally {
       setLoading(false);
     }

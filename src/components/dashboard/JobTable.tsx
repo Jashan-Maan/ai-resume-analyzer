@@ -27,6 +27,7 @@ import { Label } from "@/components/ui/label";
 import { Trash2, Pencil } from "lucide-react";
 import StatusBadge from "./StatusBadge";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface Job {
   _id: string;
@@ -67,9 +68,14 @@ export default function JobTable({
     try {
       const res = await fetch(`/api/jobs/${id}`, { method: "DELETE" });
       const data = await res.json();
-      if (data.success) onDelete(id);
+      if (data.success) {
+        onDelete(id);
+      } else {
+        toast.error("Failed to delete. Please try again.");
+      }
     } catch (err) {
       console.error("Delete failed:", err);
+      toast.error("Something went wrong");
     } finally {
       setDeletingId(null);
     }
@@ -120,9 +126,12 @@ export default function JobTable({
           status: editForm.status as Job["status"],
         });
         setEditingJob(null);
+      } else {
+        toast.success("Failed to update. Please try again.");
       }
     } catch (err) {
       console.error("Edit failed:", err);
+      toast.error("Something went wrong");
     } finally {
       setEditLoading(false);
     }
