@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import FileUpload from "@/components/dashboard/FileUpload";
 import AnalysisResult from "@/components/dashboard/AnalysisResult";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface AnalysisData {
   atsScore: number;
@@ -32,12 +33,15 @@ export default function AnalyzePage() {
   const handleAnalyze = async () => {
     if (!file) {
       setError("Please upload your resume first");
+      toast.error("Please upload your resume first");
       return;
     }
 
     setLoading(true);
     setError("");
     setResult(null);
+
+    const loadingToast = toast.loading("Analyzing your resume...");
 
     try {
       const formData = new FormData();
@@ -50,19 +54,23 @@ export default function AnalyzePage() {
       });
 
       const data = await res.json();
+      toast.dismiss(loadingToast);
 
       if (res.status === 429) {
         setError(data.message); // shows "Try again in X minutes"
+        toast.error(data.message);
         return;
       }
 
       if (!data.success) {
         setError(data.message || "Analysis failed. Please try again");
+        toast.error(data.message || "Analysis failed");
         return;
       }
 
       setResult(data.data);
       setRemaining(data.remaining);
+      toast.success("Resume analyzed successfully!");
 
       setTimeout(() => {
         document.getElementById("results")?.scrollIntoView({
@@ -71,6 +79,8 @@ export default function AnalyzePage() {
       }, 100);
     } catch (error) {
       setError("Something went wrong. Please try again.");
+      toast.dismiss(loadingToast);
+      toast.error("Something went wrong. Please try again.");
       console.error(error);
     } finally {
       setLoading(false);

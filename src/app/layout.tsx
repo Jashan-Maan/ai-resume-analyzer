@@ -35,7 +35,16 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <SessionProvider>
           {children}
-          <Toaster richColors position="top-right" />
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: "#ccebff",
+                color: "black",
+                border: "1px solid #0099ff",
+              },
+            }}
+          />
         </SessionProvider>
       </body>
     </html>
