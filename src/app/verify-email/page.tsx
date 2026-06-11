@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function VerifyEmailPage() {
   const router = useRouter();
@@ -30,7 +31,9 @@ export default function VerifyEmailPage() {
 
       const data = await res.json();
       setResendMessage(data.message);
+      toast.success(data.message);
     } catch {
+      toast.error("Failed to resend. Please try again.");
       setResendMessage("Failed to resend. Please try again.");
     } finally {
       setResendLoading(false);
@@ -81,6 +84,7 @@ export default function VerifyEmailPage() {
     const fullCode = code.join("");
     if (fullCode.length !== 6) {
       setError("Please enter the complete 6-digit code");
+      toast.error("Please enter the complete 6-digit code");
       return;
     }
 
@@ -98,13 +102,16 @@ export default function VerifyEmailPage() {
 
       if (!data.success) {
         setError(data.message);
+        toast.error(data.message);
         return;
       }
 
       // Success → go to login
       router.push("/login?verified=true");
+      toast.success("Email verified successfully");
     } catch {
       setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

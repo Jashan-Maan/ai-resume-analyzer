@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export default function CredentialsForm() {
   const router = useRouter();
@@ -34,6 +35,7 @@ export default function CredentialsForm() {
 
       if (!checkData.success) {
         setError(checkData.message);
+        toast.error(checkData.message);
         if (checkData.needsVerification) {
           setVerifyEmail(checkData.email || form.email);
         }
@@ -52,6 +54,7 @@ export default function CredentialsForm() {
         return;
       }
 
+      toast.success("Welcome back!");
       router.push("/dashboard");
       router.refresh();
     } catch {

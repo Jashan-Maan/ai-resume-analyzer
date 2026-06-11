@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -37,12 +38,16 @@ export default function SignupPage() {
 
       if (!data.success) {
         setError(data.message);
+        toast.error(data.message);
         return;
       }
+
+      toast.success("Account created! Check your email.");
 
       // Redirect to verify page with email
       router.push(`/verify-email?email=${encodeURIComponent(form.email)}`);
     } catch {
+      toast.error("Something went wrong. Please try again.");
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
