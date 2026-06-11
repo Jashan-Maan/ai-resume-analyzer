@@ -7,20 +7,20 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-// Analyze route — 5 requests per hour
+// Analyze route — 5 requests per 5 hour
 // Most strict because Gemini API has limited quota
 export const analyzeLimiter = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(5, "3 h"),
+  limiter: Ratelimit.slidingWindow(5, "5 h"),
   analytics: true,
   prefix: "kira:analyze",
 });
 
-// Interview route — 5 requests per hour
-// Gemini 3 flash gives 20 requests per day, so 5 per 3hours is safe
+// Interview route — 5 requests per 5 hour
+// Gemini 3 flash gives 20 requests per day, so 5 per 5hours is safe
 export const interviewLimiter = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(5, "3 h"),
+  limiter: Ratelimit.slidingWindow(5, "5 h"),
   analytics: true,
   prefix: "kira:interview",
 });

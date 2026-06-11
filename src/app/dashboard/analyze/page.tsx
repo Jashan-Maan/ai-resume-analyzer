@@ -57,8 +57,14 @@ export default function AnalyzePage() {
       toast.dismiss(loadingToast);
 
       if (res.status === 429) {
-        setError(data.message); // shows "Try again in X minutes"
+        setError(data.message); // shows "Try again in X time later"
         toast.error(data.message);
+        return;
+      }
+
+      if (res.status === 503) {
+        setError("AI is currently busy. Please try again later.");
+        toast.error("AI is currently busy. Please try again later.");
         return;
       }
 

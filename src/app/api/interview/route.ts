@@ -26,10 +26,18 @@ export async function POST(req: NextRequest) {
       const minutesLeft = Math.ceil(
         (resetDate.getTime() - Date.now()) / 1000 / 60,
       );
+      const hoursLeft = Math.ceil(minutesLeft / 60);
+      const minutes = Math.ceil(minutesLeft % 60);
+
+      const msg =
+        hoursLeft > 0
+          ? `Rate limit exceeded. You can generate questions again in ${hoursLeft} hours and ${minutes} minutes.`
+          : `Rate limit exceeded. You can generate questions again in ${minutes} minutes.`;
+
       return NextResponse.json(
         {
           success: false,
-          message: `Rate limit exceeded. You can generate questions again in ${minutesLeft} minutes.`,
+          message: msg,
         },
         { status: 429 },
       );
