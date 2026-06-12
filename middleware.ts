@@ -1,4 +1,15 @@
-import { auth } from "@/auth";
+import NextAuth from "next-auth";
+
+const { auth } = NextAuth({
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
+  session: {
+    strategy: "jwt",
+  },
+  providers: [],
+});
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
