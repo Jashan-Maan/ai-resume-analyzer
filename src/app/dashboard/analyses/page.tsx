@@ -44,7 +44,7 @@ export default async function AnalysesPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-sky-blue-50 p-2 rounded-lg">
             <BarChart2 size={20} className="text-sky-blue-600" />
@@ -59,7 +59,7 @@ export default async function AnalysesPage() {
         </div>
         <Link
           href="/dashboard/analyze"
-          className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2"
+          className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 w-full sm:w-auto justify-center"
         >
           ✦ New Analysis
         </Link>
