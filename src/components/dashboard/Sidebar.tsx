@@ -10,6 +10,7 @@ import {
   User,
   LogOut,
   MessageSquare,
+  X,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -32,17 +33,29 @@ interface SidebarProps {
     email?: string | null;
     image?: string | null;
   };
+  onClose?: () => void;
 }
 
-const Sidebar = ({ user }: SidebarProps) => {
+const Sidebar = ({ user, onClose }: SidebarProps) => {
   const pathname = usePathname();
 
   return (
     <div className="w-64 bg-white border-r flex flex-col h-full shrink-0">
       {/* Logo */}
-      <div className="p-6 border-b">
-        <h1 className="text-xl font-bold text-sky-blue-600">Kira</h1>
-        <p className="text-xs text-gray-400 mt-0.5">AI Resume Analyzer</p>
+      <div className="p-6 border-b flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-sky-blue-600">Kira</h1>
+          <p className="text-xs text-gray-400 mt-0.5">AI Resume Analyzer</p>
+        </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="md:hidden p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition"
+            aria-label="Close sidebar"
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
 
       {/* User Info */}
@@ -81,6 +94,7 @@ const Sidebar = ({ user }: SidebarProps) => {
             <Link
               key={href}
               href={href}
+              onClick={onClose}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all
                 ${
                   isActive
