@@ -154,74 +154,76 @@ export default function JobTable({
   return (
     <>
       <div className="bg-white rounded-xl border overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-gray-50">
-              <TableHead className="font-semibold text-gray-700">
-                Company
-              </TableHead>
-              <TableHead className="font-semibold text-gray-700">
-                Role
-              </TableHead>
-              <TableHead className="font-semibold text-gray-700">
-                Status
-              </TableHead>
-              <TableHead className="font-semibold text-gray-700">
-                Applied Date
-              </TableHead>
-              <TableHead className="font-semibold text-gray-700">
-                Notes
-              </TableHead>
-              <TableHead className="font-semibold text-gray-700">
-                Actions
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {jobs.map((job) => (
-              <TableRow key={job._id} className="hover:bg-gray-50 transition">
-                <TableCell className="font-medium">{job.company}</TableCell>
-                <TableCell className="text-gray-600">{job.role}</TableCell>
-
-                {/* Status — Shadcn Select ✅ */}
-                <TableCell>
-                  <StatusBadge status={job.status} />
-                </TableCell>
-
-                <TableCell className="text-gray-500 text-sm">
-                  {format(new Date(job.appliedDate), "MMM dd, yyyy")}
-                </TableCell>
-                <TableCell className="text-gray-500 text-sm max-w-32 truncate">
-                  {job.note || "—"}
-                </TableCell>
-
-                {/* Actions */}
-                <TableCell className="flex gap-1">
-                  {/* Edit ✅ */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleEditOpen(job)}
-                    className="text-blue-400 hover:text-blue-600 hover:bg-blue-50"
-                  >
-                    <Pencil size={15} />
-                  </Button>
-
-                  {/* Delete ✅ */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDelete(job._id)}
-                    disabled={deletingId === job._id}
-                    className="text-red-400 hover:text-red-600 hover:bg-red-50"
-                  >
-                    <Trash2 size={15} />
-                  </Button>
-                </TableCell>
+        <div className="overflow-x-auto w-full">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-gray-50">
+                <TableHead className="font-semibold text-gray-700">
+                  Company
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700">
+                  Role
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700">
+                  Status
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700">
+                  Applied Date
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700">
+                  Notes
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700">
+                  Actions
+                </TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {jobs.map((job) => (
+                <TableRow key={job._id} className="hover:bg-gray-50 transition">
+                  <TableCell className="font-medium">{job.company}</TableCell>
+                  <TableCell className="text-gray-600">{job.role}</TableCell>
+
+                  {/* Status — Shadcn Select ✅ */}
+                  <TableCell>
+                    <StatusBadge status={job.status} />
+                  </TableCell>
+
+                  <TableCell className="text-gray-500 text-sm">
+                    {format(new Date(job.appliedDate), "MMM dd, yyyy")}
+                  </TableCell>
+                  <TableCell className="text-gray-500 text-sm max-w-32 truncate">
+                    {job.note || "—"}
+                  </TableCell>
+
+                  {/* Actions */}
+                  <TableCell className="flex gap-1">
+                    {/* Edit ✅ */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleEditOpen(job)}
+                      className="text-blue-400 hover:text-blue-600 hover:bg-blue-50"
+                    >
+                      <Pencil size={15} />
+                    </Button>
+
+                    {/* Delete ✅ */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(job._id)}
+                      disabled={deletingId === job._id}
+                      className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                    >
+                      <Trash2 size={15} />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {/* Edit Modal */}

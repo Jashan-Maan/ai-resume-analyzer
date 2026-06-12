@@ -81,7 +81,7 @@ export default function AddJobModal({ onJobAdded }: AddJobModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white gap-2">
+        <Button className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white gap-2 w-full sm:w-auto justify-center">
           <Plus size={16} />
           Add Job
         </Button>
