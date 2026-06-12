@@ -2,6 +2,8 @@
 
 **Optimize your resume. Ace the ATS. Land the interview.**
 
+🚀 **Live Application:** [https://ai-resume-analyzer-ten-wheat.vercel.app/](https://ai-resume-analyzer-ten-wheat.vercel.app/)
+
 Kira is an AI-powered resume analysis and job tracking platform built with Next.js 16, Google Gemini, and MongoDB.
 Upload your resume, paste a job description, and get an instant ATS compatibility score
 with actionable improvement suggestions — all in seconds.
@@ -203,123 +205,128 @@ with actionable improvement suggestions — all in seconds.
 ```
 ai-resume-analyzer/
 ├── middleware.ts                 # Auth middleware — protects /dashboard routes
-├── next.config.ts               # Next.js config (remote image patterns)
-├── tailwind.config.ts           # Tailwind CSS configuration
-├── package.json
-├── tsconfig.json
+├── next.config.ts               # Next.js config (remote image patterns, redirect rules)
+├── postcss.config.mjs           # PostCSS configuration for Tailwind CSS v4
+├── components.json              # shadcn/ui configuration
+├── eslint.config.mjs            # ESLint configuration
+├── package.json                 # Project scripts and dependencies
+├── tsconfig.json                # TypeScript configuration
 ├── .env.example                 # Required environment variables template
 │
-├── public/                      # Static assets (logo, OAuth provider icons)
-│   ├── logo.svg
-│   ├── google.svg
-│   └── github.svg
+├── public/                      # Static assets
+│   ├── logo.svg                 # Application logo
+│   ├── google.svg               # Google provider icon
+│   └── github.svg               # GitHub provider icon
 │
 └── src/
-    ├── auth.ts                  # NextAuth.js v5 config (Google + GitHub + Credentials)
+    ├── auth.ts                  # NextAuth.js v5 configuration
     │
     ├── app/
-    │   ├── globals.css          # Global styles + Tailwind base
-    │   ├── layout.tsx           # Root layout (Geist font, metadata)
-    │   ├── page.tsx             # Landing page (Hero, Features, Testimonials, etc.)
+    │   ├── globals.css          # Global CSS containing Tailwind v4 directives
+    │   ├── layout.tsx           # Root layout with typography and theme providers
+    │   ├── page.tsx             # Landing/Marketing page
     │   │
     │   ├── login/
-    │   │   ├── page.tsx         # Sign-in page (credentials form + OAuth buttons)
-    │   │   └── actions.ts       # Server actions for OAuth sign-in
+    │   │   ├── page.tsx         # Sign-in page with OAuth & Credentials
+    │   │   └── actions.ts       # Server actions for OAuth
     │   │
     │   ├── signup/
-    │   │   └── page.tsx         # Registration page (name, email, password form + OAuth)
+    │   │   └── page.tsx         # Account registration page
     │   │
     │   ├── verify-email/
-    │   │   └── page.tsx         # 6-digit OTP verification page
+    │   │   └── page.tsx         # OTP verification page (email verification)
     │   │
     │   ├── dashboard/
-    │   │   ├── layout.tsx       # Dashboard shell (sidebar + main content)
-    │   │   ├── page.tsx         # Dashboard overview (stats, charts)
+    │   │   ├── layout.tsx       # Dashboard shell containing Sidebar and navigation
+    │   │   ├── page.tsx         # Dashboard overview (stats, charts, summaries)
     │   │   ├── analyze/
-    │   │   │   └── page.tsx     # Resume upload + AI analysis form
+    │   │   │   └── page.tsx     # Resume upload & analysis page
     │   │   ├── interview/
-    │   │   │   └── page.tsx     # Mock interview question generator
+    │   │   │   └── page.tsx     # Mock interview questions generator page
     │   │   ├── analyses/
     │   │   │   └── page.tsx     # Analysis history listing
     │   │   ├── jobs/
-    │   │   │   └── page.tsx     # Job application tracker
+    │   │   │   └── page.tsx     # Job application tracker table
     │   │   └── profile/
-    │   │       └── page.tsx     # User profile + career statistics
+    │   │       └── page.tsx     # User profile page
     │   │
     │   └── api/
     │       ├── auth/
     │       │   ├── [...nextauth]/
-    │       │   │   └── route.ts # NextAuth API route handler
+    │       │   │   └── route.ts # NextAuth authentication API handler
     │       │   ├── signup/
-    │       │   │   └── route.ts # POST: register new user + send verification email
+    │       │   │   └── route.ts # Email/password sign-up API endpoint
     │       │   └── verify-email/
-    │       │       └── route.ts # POST: verify 6-digit OTP code
+    │       │       └── route.ts # OTP verification API endpoint
     │       ├── analyze/
-    │       │   └── route.ts     # POST: analyze resume / GET: fetch analyses
+    │       │   └── route.ts     # Resume upload, parse and analysis API
     │       ├── interview/
-    │       │   └── route.ts     # POST: generate mock interview questions
+    │       │   └── route.ts     # Mock interview generation API endpoint
     │       ├── jobs/
-    │       │   ├── route.ts     # GET: list jobs / POST: create job
+    │       │   ├── route.ts     # Jobs CRUD API (list/create)
     │       │   └── [id]/
-    │       │       └── route.ts # PUT: update job / DELETE: delete job
+    │       │       └── route.ts # Job item CRUD API (update/delete)
     │       └── user/
-    │           └── route.ts     # GET: user profile + aggregated stats
+    │           └── route.ts     # User profile and stats API endpoint
     │
     ├── components/
-    │   ├── ui/                  # shadcn/ui primitives (Button, Card, Badge, etc.)
-    │   ├── auth/                # Authentication components
-    │   │   └── CredentialsForm.tsx # Email/password login form
-    │   ├── email/               # Email templates (React Email)
-    │   │   └── VerificationEmail.tsx # OTP verification email template
-    │   ├── shared/              # Landing page components
-    │   │   ├── Navbar.tsx       # Landing page navigation bar
-    │   │   ├── Hero.tsx         # Hero section with CTA
-    │   │   ├── StatsBar.tsx     # Stats counter bar
-    │   │   ├── Features.tsx     # Feature showcase grid
-    │   │   ├── HowItWorks.tsx   # Step-by-step guide section
-    │   │   ├── Testimonials.tsx # User testimonials carousel
-    │   │   ├── CallToAction.tsx # Bottom CTA section
-    │   │   └── Footer.tsx       # Page footer
-    │   └── dashboard/           # Dashboard-specific components
-    │       ├── Sidebar.tsx      # Navigation sidebar with user avatar
-    │       ├── StatsCard.tsx    # Stat card with icon + trend text
-    │       ├── StatusChart.tsx  # Application status donut chart
-    │       ├── ScoreTrendChart.tsx # ATS score trend line chart
-    │       ├── FileUpload.tsx   # Drag-and-drop PDF upload component
-    │       ├── AnalysisResult.tsx # Full analysis result display
-    │       ├── AnalysisCard.tsx # Expandable analysis history card
-    │       ├── InterviewResult.tsx # Mock interview questions display
-    │       ├── JobTable.tsx     # Job applications table with actions
-    │       ├── AddJobModal.tsx  # Modal form for adding new jobs
-    │       ├── StatusBadge.tsx  # Colored status badge component
-    │       └── SignOutButton.tsx # Sign-out button for profile page
+    │   ├── ui/                  # UI design system components (Button, Card, Input, etc.)
+    │   ├── auth/
+    │   │   └── CredentialsForm.tsx # Credentials login and registration forms
+    │   ├── email/
+    │   │   └── VerificationEmail.tsx # React Email OTP verification template
+    │   ├── shared/              # Landing page shared visual components
+    │   │   ├── Navbar.tsx       # Navigation bar
+    │   │   ├── Hero.tsx         # Hero section
+    │   │   ├── StatsBar.tsx     # Statistics metrics highlight bar
+    │   │   ├── Features.tsx     # Key features grid
+    │   │   ├── HowItWorks.tsx   # Visual how-it-works block
+    │   │   ├── Testimonials.tsx # Customer testimonials carousel
+    │   │   ├── CallToAction.tsx # Call to action bar
+    │   │   └── Footer.tsx       # Main footer
+    │   └── dashboard/           # Dashboard-specific views
+    │       ├── Sidebar.tsx      # Persistent dashboard sidebar
+    │       ├── DashboardShell.tsx # Main dashboard layout wrapper
+    │       ├── StatsCard.tsx    # Summary metrics card
+    │       ├── StatusChart.tsx  # Donut status distribution chart
+    │       ├── ScoreTrendChart.tsx # ATS trend chart
+    │       ├── FileUpload.tsx   # PDF dropzone uploader
+    │       ├── AnalysisResult.tsx # Detailed score & review breakdown
+    │       ├── AnalysisCard.tsx # History summary card
+    │       ├── InterviewResult.tsx # Custom question card layout
+    │       ├── JobTable.tsx     # Responsive applications table
+    │       ├── AddJobModal.tsx  # New job submission form modal
+    │       ├── StatusBadge.tsx  # Styled state badge
+    │       └── SignOutButton.tsx # Profile log-out trigger
+    │
+    ├── config/
+    │   └── auth.config.ts       # NextAuth credential and OAuth configuration options
     │
     ├── helper/
-    │   └── verifyCode.ts       # OTP generation + expiry utilities
+    │   └── verifyCode.ts       # Code generation utilities (expiry validation)
     │
     ├── lib/
-    │   ├── ai.ts               # Gemini AI integration (analysis + interview questions)
-    │   ├── dbConnect.ts        # MongoDB connection singleton
-    │   ├── pdfParser.ts        # PDF text extraction using unpdf
-    │   ├── rateLimiter.ts      # Upstash Redis rate limiters (analyze, interview, jobs)
-    │   ├── resend.ts           # Resend email client singleton
-    │   └── utils.ts            # Utility functions (cn helper)
+    │   ├── ai.ts               # Gemini Model integration (parsing structured responses)
+    │   ├── dbConnect.ts        # Database connection reuse logic
+    │   ├── pdfParser.ts        # Text extractor (unpdf wrapper)
+    │   ├── rateLimiter.ts      # Rate limiter settings using Upstash Redis
+    │   └── utils.ts            # Common helpers (clsx tailwind merging)
     │
     ├── models/
-    │   ├── User.ts             # User model (name, email, password, verification, etc.)
-    │   ├── Analysis.ts         # Analysis model (ATS score, strengths, weaknesses, etc.)
-    │   └── Job.ts              # Job model (company, role, status, jobDescription, notes)
+    │   ├── User.ts             # User document schema definition
+    │   ├── Analysis.ts         # Resume analysis result model
+    │   └── Job.ts              # Job application tracking model
     │
     ├── schemas/
-    │   ├── AuthSchema.ts       # Zod validation schemas for signup
-    │   └── JobSchema.ts        # Zod validation schemas for job CRUD
+    │   ├── AuthSchema.ts       # Login/Register validation rules
+    │   └── JobSchema.ts        # Application fields validation rules
     │
     ├── services/
-    │   └── email.ts            # Email sending service (verification emails via Resend)
+    │   └── email.ts            # Resend transaction handling layer
     │
     └── types/
-        ├── ApiResponse.ts      # Shared API response interface
-        └── next-auth.d.ts      # NextAuth type augmentation (adds user.id to session)
+        ├── ApiResponse.ts      # Structured backend-frontend wrapper interface
+        └── next-auth.d.ts      # User attributes types extension
 ```
 
 ---
@@ -826,6 +833,8 @@ KIRA uses [Upstash Redis](https://upstash.com/) with the `@upstash/ratelimit` pa
 ---
 
 ## 🚢 Deployment
+
+**Live Link:** [https://ai-resume-analyzer-ten-wheat.vercel.app/](https://ai-resume-analyzer-ten-wheat.vercel.app/)
 
 ### Deploy on Vercel (Recommended)
 
