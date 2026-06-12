@@ -158,11 +158,11 @@ export default function InterviewPage() {
         )}
 
         {/* Actions */}
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={handleGenerate}
             disabled={loading || !file}
-            className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white flex-1 gap-2"
+            className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white flex-1 gap-2 w-full justify-center"
           >
             {loading ? (
               <>
@@ -175,7 +175,7 @@ export default function InterviewPage() {
           </Button>
 
           {result && (
-            <Button variant="outline" onClick={handleReset} className="gap-2">
+            <Button variant="outline" onClick={handleReset} className="gap-2 w-full sm:w-auto justify-center">
               <RefreshCw size={15} />
               Reset
             </Button>
@@ -214,11 +214,11 @@ export default function InterviewPage() {
       {/* Results */}
       {result && (
         <div id="results">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
             <h2 className="text-lg font-semibold text-gray-800">
               Your Interview Questions
             </h2>
-            <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full">
+            <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full w-fit">
               {result.technical.length +
                 result.behavioral.length +
                 result.projectBased.length}{" "}
