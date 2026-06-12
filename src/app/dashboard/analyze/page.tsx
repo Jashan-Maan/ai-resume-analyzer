@@ -156,11 +156,11 @@ export default function AnalyzePage() {
         )}
 
         {/* Actions */}
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={handleAnalyze}
             disabled={loading || !file}
-            className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white flex-1 gap-2"
+            className="bg-sky-blue-600 hover:bg-sky-blue-700 text-white flex-1 gap-2 w-full justify-center"
           >
             {loading ? (
               <>
@@ -173,7 +173,7 @@ export default function AnalyzePage() {
           </Button>
 
           {result && (
-            <Button variant="outline" onClick={handleReset}>
+            <Button variant="outline" onClick={handleReset} className="w-full sm:w-auto justify-center">
               Analyze Another
             </Button>
           )}
