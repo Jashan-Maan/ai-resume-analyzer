@@ -1,11 +1,11 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-export default function VerifyEmailPage() {
+function VerifyEmailForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
@@ -118,80 +118,94 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-2xl shadow-sm border w-full max-w-md text-center">
-        {/* Icon */}
-        <div className="text-5xl mb-4">📧</div>
+    <div className="bg-white p-8 rounded-2xl shadow-sm border w-full max-w-md text-center">
+      {/* Icon */}
+      <div className="text-5xl mb-4">📧</div>
 
-        <h1 className="text-xl font-bold text-gray-900 mb-2">
-          Check your email
-        </h1>
-        <p className="text-gray-500 text-sm mb-1">We sent a 6-digit code to</p>
-        <p className="text-sky-blue-600 font-medium text-sm mb-6">{email}</p>
+      <h1 className="text-xl font-bold text-gray-900 mb-2">Check your email</h1>
+      <p className="text-gray-500 text-sm mb-1">We sent a 6-digit code to</p>
+      <p className="text-sky-blue-600 font-medium text-sm mb-6">{email}</p>
 
-        {/* OTP Input */}
-        <div className="flex gap-3 justify-center mb-6">
-          {code.map((digit, i) => (
-            <input
-              key={i}
-              ref={(el) => {
-                inputs.current[i] = el;
-              }}
-              type="text"
-              inputMode="numeric"
-              maxLength={1}
-              value={digit}
-              onChange={(e) => handleChange(i, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(i, e)}
-              onPaste={handlePaste}
-              className="w-12 h-12 text-center text-xl font-bold border-2 rounded-xl focus:outline-none focus:border-sky-blue-500 transition"
-            />
-          ))}
+      {/* OTP Input */}
+      <div className="flex gap-3 justify-center mb-6">
+        {code.map((digit, i) => (
+          <input
+            key={i}
+            ref={(el) => {
+              inputs.current[i] = el;
+            }}
+            type="text"
+            inputMode="numeric"
+            maxLength={1}
+            value={digit}
+            onChange={(e) => handleChange(i, e.target.value)}
+            onKeyDown={(e) => handleKeyDown(i, e)}
+            onPaste={handlePaste}
+            className="w-12 h-12 text-center text-xl font-bold border-2 rounded-xl focus:outline-none focus:border-sky-blue-500 transition"
+          />
+        ))}
+      </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4">
+          <p className="text-red-600 text-sm">{error}</p>
         </div>
+      )}
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4">
-            <p className="text-red-600 text-sm">{error}</p>
-          </div>
+      <Button
+        onClick={handleVerify}
+        disabled={loading || code.join("").length !== 6}
+        className="w-full bg-sky-blue-600 hover:bg-sky-blue-700 text-white mb-4"
+      >
+        {loading ? (
+          <>
+            <Loader2 size={16} className="animate-spin mr-2" />
+            Verifying...
+          </>
+        ) : (
+          "Verify Email"
         )}
+      </Button>
 
-        <Button
-          onClick={handleVerify}
-          disabled={loading || code.join("").length !== 6}
-          className="w-full bg-sky-blue-600 hover:bg-sky-blue-700 text-white mb-4"
+      <p className="text-xs text-gray-400">Code expires in 10 minutes</p>
+      <div className="mt-4">
+        <p className="text-xs text-gray-400 mb-2">Didn't receive the code?</p>
+        <button
+          onClick={handleResend}
+          disabled={resendLoading}
+          className="text-sky-blue-600 text-xs hover:underline disabled:opacity-50 flex items-center gap-1 mx-auto"
         >
-          {loading ? (
+          {resendLoading ? (
             <>
-              <Loader2 size={16} className="animate-spin mr-2" />
-              Verifying...
+              <Loader2 size={12} className="animate-spin" />
+              Sending...
             </>
           ) : (
-            "Verify Email"
+            "Resend verification code"
           )}
-        </Button>
-
-        <p className="text-xs text-gray-400">Code expires in 10 minutes</p>
-        <div className="mt-4">
-          <p className="text-xs text-gray-400 mb-2">Didn't receive the code?</p>
-          <button
-            onClick={handleResend}
-            disabled={resendLoading}
-            className="text-sky-blue-600 text-xs hover:underline disabled:opacity-50 flex items-center gap-1 mx-auto"
-          >
-            {resendLoading ? (
-              <>
-                <Loader2 size={12} className="animate-spin" />
-                Sending...
-              </>
-            ) : (
-              "Resend verification code"
-            )}
-          </button>
-          {resendMessage && (
-            <p className="text-xs text-green-600 mt-2">{resendMessage}</p>
-          )}
-        </div>
+        </button>
+        {resendMessage && (
+          <p className="text-xs text-green-600 mt-2">{resendMessage}</p>
+        )}
       </div>
+    </div>
+  );
+}
+
+// 2. Wrap the form in a Suspense boundary in the main Page component
+export default function VerifyEmailPage() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <Suspense
+        fallback={
+          <div className="flex flex-col items-center">
+            <Loader2 className="h-8 w-8 animate-spin text-sky-blue-600 mb-4" />
+            <p className="text-sm text-gray-500">Loading...</p>
+          </div>
+        }
+      >
+        <VerifyEmailForm />
+      </Suspense>
     </div>
   );
 }
