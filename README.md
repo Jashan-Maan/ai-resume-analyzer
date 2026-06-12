@@ -90,7 +90,7 @@ with actionable improvement suggestions — all in seconds.
 
 - **Three sign-in methods:** Google OAuth, GitHub OAuth, and email/password credentials
 - **Email/password signup** with Zod-validated registration form (name, email, password, confirm password)
-- **Email verification** via 6-digit OTP code sent through Resend (10-minute expiry)
+- **Email verification** via 6-digit OTP code sent through NodeMailer + Gmail (10-minute expiry)
 - OTP input with auto-advance, backspace navigation, and paste support
 - JWT-based sessions — no server-side session store required
 - Middleware-protected routes: unauthenticated users are redirected to `/login`
@@ -130,7 +130,7 @@ with actionable improvement suggestions — all in seconds.
 | **AI**             | [Google Gemini API](https://ai.google.dev/) (2.5 Flash + 3.5 Flash)                                |
 | **Rate Limiting**  | [Upstash Redis](https://upstash.com/) + [@upstash/ratelimit](https://github.com/upstash/ratelimit) |
 | **PDF Parsing**    | [unpdf](https://github.com/nicolo-ribaudo/unpdf)                                                   |
-| **Email**          | [Resend](https://resend.com/) + [React Email](https://react.email/)                                |
+| **Email**          | [NodeMailer](https://nodemailer.com/) + [Gmail](https://www.gmail.com/)                            |
 | **Password Hash**  | [bcryptjs](https://github.com/dcodeIO/bcrypt.js)                                                   |
 | **Validation**     | [Zod 4](https://zod.dev/)                                                                          |
 | **Date Utilities** | [date-fns](https://date-fns.org/)                                                                  |
@@ -165,8 +165,8 @@ with actionable improvement suggestions — all in seconds.
         │             │
         ▼             ├──────────────┬──────────────┐
    ┌──────────┐  ┌────▼─────┐  ┌────▼─────┐  ┌────▼─────┐
-   │ MongoDB  │  │ Gemini   │  │ Upstash  │  │ Resend   │
-   │ Atlas    │  │ AI       │  │ Redis    │  │ Email    │
+   │ MongoDB  │  │ Gemini   │  │ Upstash  │  │ NodeMailer │
+   │ Atlas    │  │ AI       │  │ Redis    │  │ Gmail    │
    └──────────┘  └──────────┘  └──────────┘  └──────────┘
 ```
 
@@ -194,7 +194,7 @@ with actionable improvement suggestions — all in seconds.
 1. User submits name, email, password, and confirm password on `/signup`
 2. Server validates input with Zod, hashes password with bcrypt, generates a 6-digit OTP
 3. OTP is stored on the User document with a 10-minute expiry
-4. Verification email is sent via **Resend** using a **React Email** template
+4. Verification email is sent via **NodeMailer** using **Gmail**
 5. User enters the 6-digit code on `/verify-email`
 6. Server verifies the code, marks the user as verified, and redirects to `/login`
 
@@ -322,7 +322,7 @@ ai-resume-analyzer/
     │   └── JobSchema.ts        # Application fields validation rules
     │
     ├── services/
-    │   └── email.ts            # Resend transaction handling layer
+    │   └── email.ts            # NodeMailer transaction handling layer
     │
     └── types/
         ├── ApiResponse.ts      # Structured backend-frontend wrapper interface
@@ -344,7 +344,7 @@ ai-resume-analyzer/
 | **GitHub Developer Settings** | OAuth App credentials               |
 | **Google AI Studio**          | Gemini API key                      |
 | **Upstash**                   | Redis database (free tier works)    |
-| **Resend**                    | Email API key (free tier works)     |
+| **NodeMailer**                | Gmail account (free tier works)     |
 
 ### Installation
 
@@ -390,8 +390,11 @@ GEMINI_API_KEY=your_gemini_api_key
 UPSTASH_REDIS_REST_URL=your_redis_rest_url
 UPSTASH_REDIS_REST_TOKEN=your_redis_rest_token
 
-# Resend Email — get your API key from https://resend.com
-RESEND_API_KEY=your_resend_api_key
+# Gmail API
+GMAIL_CLIENT_ID=your_client_id
+GMAIL_CLIENT_SECRET=your_client_secret
+GMAIL_REFRESH_TOKEN=your_refresh_token
+EMAIL_USER=your_email_id
 ```
 
 **📌 Setting Up OAuth Providers (step-by-step)**
@@ -427,12 +430,15 @@ RESEND_API_KEY=your_resend_api_key
 3. Copy the **REST URL** and **REST Token** from the database details page
 4. Paste them into your `.env` as `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
 
-#### Resend Email
+#### Gmail API
 
-1. Go to [Resend Dashboard](https://resend.com/)
-2. Create an account and generate an **API Key**
-3. Copy the key into your `.env` as `RESEND_API_KEY`
-4. (Optional) Add and verify a custom sending domain for production use
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project (or use an existing one)
+3. Navigate to **APIs & Services → Credentials**
+4. Click **Create Credentials → OAuth 2.0 Client ID**
+5. Set **Application type** to "Web application"
+6. Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+7. Copy **Client ID** and **Client Secret** into your `.env`
 
 ### Running the Development Server
 
@@ -459,14 +465,14 @@ All API routes are protected by NextAuth.js session authentication (except signu
 
 #### `POST /api/auth/signup`
 
-Register a new user with email and password. Sends a 6-digit OTP verification email via Resend.
+Register a new user with email and password. Sends a 6-digit OTP verification email via Gmail.
 
-| Field             | Type     | Required | Description                        |
-| ----------------- | -------- | -------- | ---------------------------------- |
-| `name`            | `string` | ✅       | Full name (min 2 characters)       |
-| `email`           | `string` | ✅       | Valid email address                |
-| `password`        | `string` | ✅       | Password (min 6 characters)        |
-| `confirmPassword` | `string` | ✅       | Must match `password`              |
+| Field             | Type     | Required | Description                  |
+| ----------------- | -------- | -------- | ---------------------------- |
+| `name`            | `string` | ✅       | Full name (min 2 characters) |
+| `email`           | `string` | ✅       | Valid email address          |
+| `password`        | `string` | ✅       | Password (min 6 characters)  |
+| `confirmPassword` | `string` | ✅       | Must match `password`        |
 
 **Content-Type:** `application/json`
 
@@ -492,10 +498,10 @@ Register a new user with email and password. Sends a 6-digit OTP verification em
 
 Verify a user's email with the 6-digit OTP code.
 
-| Field   | Type     | Required | Description                |
-| ------- | -------- | -------- | -------------------------- |
-| `email` | `string` | ✅       | User's email address       |
-| `code`  | `string` | ✅       | 6-digit verification code  |
+| Field   | Type     | Required | Description               |
+| ------- | -------- | -------- | ------------------------- |
+| `email` | `string` | ✅       | User's email address      |
+| `code`  | `string` | ✅       | 6-digit verification code |
 
 **Content-Type:** `application/json`
 
@@ -764,7 +770,7 @@ KIRA uses [NextAuth.js v5 (Auth.js)](https://authjs.dev/) with the **JWT strateg
 
 - Users can register with name, email, and password via the `/signup` page
 - Passwords are hashed with **bcrypt** (12 salt rounds) before storage
-- Registration requires **email verification** via a 6-digit OTP sent through **Resend**
+- Registration requires **email verification** via a 6-digit OTP sent through **NodeMailer** using **Gmail**
 - OTP codes expire after **10 minutes**
 - Unverified users cannot sign in until they complete email verification
 - The OTP input supports auto-advance, backspace navigation, and clipboard paste
@@ -843,8 +849,7 @@ KIRA uses [Upstash Redis](https://upstash.com/) with the `@upstash/ratelimit` pa
 3. Add all environment variables from `.env` to the Vercel project settings
 4. Update `NEXTAUTH_URL` to your production domain
 5. Update OAuth redirect URIs in Google Cloud Console and GitHub Developer Settings to point to your production domain
-6. Add and verify a sending domain in Resend for production email delivery
-7. Deploy
+6. Deploy
 
 ### Other Platforms
 
