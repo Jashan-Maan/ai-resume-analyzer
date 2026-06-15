@@ -6,17 +6,24 @@ import AnalysisCard from "@/components/dashboard/AnalysisCard";
 import { BarChart2 } from "lucide-react";
 import Link from "next/link";
 
+/**
+ * Server-side Page Component for the Resume Analyses History & Detailed Analytics View.
+ * Displays all previous resume analysis results with cards, statistics, and charts.
+ */
 export default async function AnalysesPage() {
+  // 1. Authenticate user session. Redirect to login page if unauthenticated.
   const session = await auth();
   if (!session) redirect("/login");
 
+  // 2. Establish connection to the MongoDB database.
   await dbConnect();
 
+  // 3. Fetch all of the user's previous resume analyses from the database.
   const rawAnalyses = await Analysis.find({ userId: session.user.id })
     .sort({ createdAt: -1 })
     .lean();
 
-  // ✅ Serialize everything to plain objects
+  // ✅ Serialize database documents into plain objects for clean Next.js rendering
   const analyses = rawAnalyses.map((a) => ({
     _id: a._id.toString(),
     userId: a.userId,
@@ -43,7 +50,7 @@ export default async function AnalysesPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Header Section: Title, analysis counts, and action button for running a new analysis */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-sky-blue-50 p-2 rounded-lg">
@@ -65,7 +72,7 @@ export default async function AnalysesPage() {
         </Link>
       </div>
 
-      {/* Stats Summary */}
+      {/* Stats Summary Panel: Average Score, Best Score, and total counts */}
       {analyses.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white rounded-xl border p-4 text-center">
@@ -92,8 +99,9 @@ export default async function AnalysesPage() {
         </div>
       )}
 
-      {/* Analyses List */}
+      {/* List / Empty State conditional renderer */}
       {analyses.length === 0 ? (
+        // Empty State: Prompt user to upload and run their first analysis
         <div className="bg-white rounded-xl border p-16 text-center">
           <p className="text-5xl mb-4">📊</p>
           <h3 className="font-semibold text-gray-800 mb-2 text-lg">
@@ -111,6 +119,7 @@ export default async function AnalysesPage() {
           </Link>
         </div>
       ) : (
+        // Analyses list rendered in chronologically descending order via custom cards
         <div className="space-y-4">
           {analyses.map((analysis, index) => (
             <AnalysisCard
