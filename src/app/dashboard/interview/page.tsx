@@ -6,6 +6,10 @@ import FileUpload from "@/components/dashboard/FileUpload";
 import InterviewResult from "@/components/dashboard/InterviewResult";
 import { toast } from "sonner";
 
+/**
+ * Data structure representation for AI-generated interview questions,
+ * split into technical, behavioral, and project-based categories.
+ */
 interface InterviewData {
   technical: {
     question: string;
@@ -22,13 +26,22 @@ interface InterviewData {
   }[];
 }
 
+/**
+ * Client-side Component that handles selecting a PDF resume,
+ * entering an optional job description, and calling the AI mock interview API.
+ */
 export default function InterviewPage() {
+  // State management variables for resume file, job description, loader, errors, and returned questions.
   const [file, setFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<InterviewData | null>(null);
 
+  /**
+   * Submits the resume file and job description to the POST /api/interview endpoint.
+   * Handles API rate limits (429), server downtime (503/500), and updates status indicators.
+   */
   const handleGenerate = async () => {
     if (!file) {
       toast.error("Please upload your resume first");
@@ -43,6 +56,7 @@ export default function InterviewPage() {
     const loadingToast = toast.loading("Generating interview questions...");
 
     try {
+      // Prepare multipart/form-data payload containing the resume file and JD
       const formData = new FormData();
       formData.append("resume", file);
       formData.append("jobDescription", jobDescription);
@@ -55,18 +69,21 @@ export default function InterviewPage() {
       const data = await res.json();
       toast.dismiss(loadingToast);
 
+      // Handle Rate Limiting
       if (res.status === 429) {
         setError(data.message);
         toast.error(data.message);
         return;
       }
 
+      // Handle server and AI model provider failures
       if (res.status === 503 || res.status === 500) {
         setError("AI is currently busy. Please try again later.");
         toast.error("AI is currently busy. Please try again later.");
         return;
       }
 
+      // Handle custom failure responses
       if (!data.success) {
         setError(
           data.message || "Failed to generate questions. Please try again.",
@@ -75,9 +92,11 @@ export default function InterviewPage() {
         return;
       }
 
+      // Set successful mock interview output
       setResult(data.data);
       toast.success("Interview questions generated!");
 
+      // Smooth scroll to the results section after rendering
       setTimeout(() => {
         document.getElementById("results")?.scrollIntoView({
           behavior: "smooth",
@@ -93,6 +112,9 @@ export default function InterviewPage() {
     }
   };
 
+  /**
+   * Resets all states to allow generating a new set of questions.
+   */
   const handleReset = () => {
     setFile(null);
     setJobDescription("");
@@ -102,7 +124,7 @@ export default function InterviewPage() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      {/* Header */}
+      {/* Header section with page title */}
       <div className="flex items-center gap-3">
         <div className="bg-sky-blue-50 p-2 rounded-lg">
           <MessageSquare size={20} className="text-sky-blue-600" />
@@ -115,9 +137,9 @@ export default function InterviewPage() {
         </div>
       </div>
 
-      {/* Form */}
+      {/* Form Card containing file upload and job description fields */}
       <div className="bg-white rounded-xl border p-6 space-y-5">
-        {/* File Upload */}
+        {/* File Upload zone component */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Resume (PDF) *
@@ -129,7 +151,7 @@ export default function InterviewPage() {
           />
         </div>
 
-        {/* Job Description */}
+        {/* Text area for optional Job Description context */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Job Description
@@ -150,14 +172,14 @@ export default function InterviewPage() {
           </p>
         </div>
 
-        {/* Error */}
+        {/* Error message card */}
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
             <p className="text-red-600 text-sm">{error}</p>
           </div>
         )}
 
-        {/* Actions */}
+        {/* Action Triggers (Generate / Reset buttons) */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={handleGenerate}
@@ -183,7 +205,7 @@ export default function InterviewPage() {
         </div>
       </div>
 
-      {/* Tips */}
+      {/* Guide & tips panel visible before results are generated */}
       {!result && (
         <div className="bg-white rounded-xl border p-5">
           <h3 className="text-sm font-semibold text-gray-700 mb-3">
@@ -211,7 +233,7 @@ export default function InterviewPage() {
         </div>
       )}
 
-      {/* Results */}
+      {/* Render the resulting interview questions once API data is ready */}
       {result && (
         <div id="results">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
