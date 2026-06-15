@@ -6,6 +6,10 @@ import AnalysisResult from "@/components/dashboard/AnalysisResult";
 import { useState } from "react";
 import { toast } from "sonner";
 
+/**
+ * Interface detailing the parsed JSON response structure returned
+ * by the resume analyzer's backend AI endpoint.
+ */
 interface AnalysisData {
   atsScore: number;
   summary: string;
@@ -22,13 +26,22 @@ interface AnalysisData {
   };
 }
 
+/**
+ * Client-side Component that handles selecting a PDF resume,
+ * entering an optional job description, and calling the AI analysis API.
+ */
 export default function AnalyzePage() {
+  // State variables for tracking files, job description, loading state, error messages, and API output.
   const [file, setFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<AnalysisData | null>(null);
 
+  /**
+   * Submits the resume file and job description to the POST /api/analyze endpoint.
+   * Handles API rate limits (429), server downtime (503/500), and updates status indicators.
+   */
   const handleAnalyze = async () => {
     if (!file) {
       setError("Please upload your resume first");
@@ -43,6 +56,7 @@ export default function AnalyzePage() {
     const loadingToast = toast.loading("Analyzing your resume...");
 
     try {
+      // Prepare multipart/form-data payload containing the resume file and JD
       const formData = new FormData();
       formData.append("resume", file);
       formData.append("jobDescription", jobDescription);
@@ -55,27 +69,32 @@ export default function AnalyzePage() {
       const data = await res.json();
       toast.dismiss(loadingToast);
 
+      // Handle Rate Limiting
       if (res.status === 429) {
         setError(data.message); // shows "Try again in X time later"
         toast.error(data.message);
         return;
       }
 
+      // Handle server and AI model provider failures
       if (res.status === 503 || res.status === 500) {
         setError("AI is currently busy. Please try again later.");
         toast.error("AI is currently busy. Please try again later.");
         return;
       }
 
+      // Handle custom failure responses
       if (!data.success) {
         setError(data.message || "Analysis failed. Please try again");
         toast.error(data.message || "Analysis failed");
         return;
       }
 
+      // Set successful analysis results
       setResult(data.data);
       toast.success("Resume analyzed successfully!");
 
+      // Smooth scroll to the results section after rendering
       setTimeout(() => {
         document.getElementById("results")?.scrollIntoView({
           behavior: "smooth",
@@ -91,6 +110,9 @@ export default function AnalyzePage() {
     }
   };
 
+  /**
+   * Resets all states to allow analyzing a new resume.
+   */
   const handleReset = () => {
     setFile(null);
     setJobDescription("");
@@ -100,7 +122,7 @@ export default function AnalyzePage() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      {/* Header */}
+      {/* Header section with page title */}
       <div className="flex items-center gap-3">
         <div className="bg-sky-blue-50 p-2 rounded-lg">
           <FileSearch size={20} className="text-sky-blue-600" />
@@ -113,9 +135,9 @@ export default function AnalyzePage() {
         </div>
       </div>
 
-      {/* Upload Form */}
+      {/* Upload Form and Input Controls */}
       <div className="bg-white rounded-xl border p-6 space-y-5">
-        {/* File Upload */}
+        {/* File Upload zone component */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Resume (PDF) *
@@ -127,7 +149,7 @@ export default function AnalyzePage() {
           />
         </div>
 
-        {/* Job Description */}
+        {/* Text area for optional Job Description context */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Job Description
@@ -148,14 +170,14 @@ export default function AnalyzePage() {
           </p>
         </div>
 
-        {/* Error */}
+        {/* Error message card */}
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
             <p className="text-red-600 text-sm">{error}</p>
           </div>
         )}
 
-        {/* Actions */}
+        {/* Action Triggers (Analyze / Reset buttons) */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={handleAnalyze}
@@ -180,7 +202,7 @@ export default function AnalyzePage() {
         </div>
       </div>
 
-      {/* Results */}
+      {/* Render the resulting analysis once API data is ready */}
       {result && (
         <div id="results">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
