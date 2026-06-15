@@ -10,13 +10,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Users, XCircle, Trophy } from "lucide-react";
 import Link from "next/link";
 
+/**
+ * Server-side Page Component for the main Dashboard.
+ * Displays statistics, insights, charts, and recent resume analyses.
+ */
 export default async function DashboardPage() {
+  // 1. Authenticate user session. Redirect to login page if unauthenticated.
   const session = await auth();
   if (!session) redirect("/login");
 
+  // 2. Establish connection to the MongoDB database.
   await dbConnect();
 
-  // Fetch real data
+  // 3. Fetch user's job applications and their 10 most recent resume analyses.
   const [jobs, analyses] = await Promise.all([
     Job.find({ userId: session.user.id }).lean(),
     Analysis.find({ userId: session.user.id })
@@ -25,7 +31,7 @@ export default async function DashboardPage() {
       .lean(),
   ]);
 
-  // Calculate stats
+  // 4. Calculate application statistics by status for the charts and overview cards.
   const stats = {
     applied: jobs.filter((j) => j.status === "applied").length,
     interview: jobs.filter((j) => j.status === "interview").length,
@@ -33,21 +39,24 @@ export default async function DashboardPage() {
     rejected: jobs.filter((j) => j.status === "rejected").length,
   };
 
+  // Get the user's first name for personal greetings.
   const firstName = session.user?.name?.split(" ")[0];
 
+  // Calculate the highest ATS score attained in all analyses.
   const bestScore =
     analyses.length > 0 ? Math.max(...analyses.map((a) => a.atsScore)) : 0;
 
+  // Calculate the interview response rate as a percentage of total applications.
   const interviewRate =
     jobs.length > 0 ? Math.round((stats.interview / jobs.length) * 100) : 0;
 
   return (
     <div className="relative space-y-8">
-      {/* Background Glow */}
+      {/* Decorative Background Glows for modern glassmorphic theme */}
       <div className="absolute -top-20 left-0 h-72 w-72 rounded-full bg-sky-400/10 blur-3xl" />
       <div className="absolute top-20 right-0 h-72 w-72 rounded-full bg-blue-400/10 blur-3xl" />
 
-      {/* Hero Section */}
+      {/* Hero Welcome & Call-to-Action Banner */}
       <div className="relative overflow-hidden rounded-3xl border border-white/50 bg-white/80 backdrop-blur-xl shadow-sm">
         <div className="absolute inset-0 bg-linear-to-r from-sky-500/10 via-blue-500/5 to-purple-500/10" />
 
@@ -74,7 +83,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Core Application Metrics & Stats Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           {
@@ -124,7 +133,7 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {/* Insights */}
+      {/* Calculated Key Performance Indicators (KPIs) */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card className="border-0 bg-linear-to-br from-sky-600 to-blue-600 text-white shadow-lg">
           <CardContent className="p-6">
@@ -148,7 +157,7 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {/* Charts */}
+      {/* Application Status Chart & ATS Performance History Chart */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-sm">
           <CardHeader className="border-b">
@@ -178,7 +187,7 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {/* Recent Activity */}
+      {/* List of Recent Resume Analyses */}
       {analyses.length > 0 && (
         <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-sm">
           <CardHeader>
@@ -210,7 +219,7 @@ export default async function DashboardPage() {
         </Card>
       )}
 
-      {/* Empty State */}
+      {/* Empty State message displayed when user has no tracked jobs or analyses */}
       {jobs.length === 0 && analyses.length === 0 && (
         <div className="rounded-3xl border bg-white p-16 text-center shadow-sm">
           <h3 className="text-2xl font-bold text-slate-900">
