@@ -5,6 +5,7 @@ import AddJobModal from "@/components/dashboard/AddJobModal";
 import { Briefcase } from "lucide-react";
 import { toast } from "sonner";
 
+// Type definition for a single Job Application record
 interface Job {
   _id: string;
   company: string;
@@ -14,17 +15,30 @@ interface Job {
   note?: string;
 }
 
+// Allowed values for filtering the job list
 type FilterStatus = "all" | "applied" | "interview" | "offer" | "rejected";
 
+/**
+ * JobsPage Component
+ * Renders the dashboard view for tracking and managing job applications.
+ * Allows filtering applications by status, adding new jobs, editing, and deleting.
+ */
 export default function JobsPage() {
+  // State for storing the list of job applications
   const [jobs, setJobs] = useState<Job[]>([]);
+  // Loading state during initial data fetch
   const [loading, setLoading] = useState(true);
+  // Current active filter selection
   const [filter, setFilter] = useState<FilterStatus>("all");
 
+  // Fetch job applications on initial component mount
   useEffect(() => {
     fetchJobs();
   }, []);
 
+  /**
+   * Fetches all job applications from the database API
+   */
   const fetchJobs = async () => {
     try {
       const res = await fetch("/api/jobs");
@@ -37,16 +51,28 @@ export default function JobsPage() {
     }
   };
 
+  /**
+   * Callback executed when a new job application is successfully created
+   * Prepends the new job to the top of the jobs list.
+   */
   const handleJobAdded = (newJob: Job) => {
     setJobs([newJob, ...jobs]);
     toast.success("Job application added!");
   };
 
+  /**
+   * Callback executed when a job application is deleted
+   * Removes the job with the specified ID from the list.
+   */
   const handleDelete = (id: string) => {
     setJobs(jobs.filter((job) => job._id !== id));
     toast.success("Job application deleted");
   };
 
+  /**
+   * Callback executed when the status of a job is updated directly
+   * Locates the job and updates its status field.
+   */
   const handleStatusChange = (id: string, status: string) => {
     setJobs(
       jobs.map((job) =>
@@ -56,15 +82,20 @@ export default function JobsPage() {
     toast.success(`Status updated to ${status}`);
   };
 
-  // ✅ handles full edit including status
+  /**
+   * Callback executed when an existing job application is edited/updated
+   * Merges new data fields into the matched job object.
+   */
   const handleEdit = (id: string, data: Partial<Job>) => {
     setJobs(jobs.map((job) => (job._id === id ? { ...job, ...data } : job)));
     toast.success("Job application updated!");
   };
 
+  // Derive the list of jobs to display based on the selected filter
   const filteredJobs =
     filter === "all" ? jobs : jobs.filter((job) => job.status === filter);
 
+  // Configuration for filter tabs rendering
   const filterTabs: { label: string; value: FilterStatus }[] = [
     { label: "All", value: "all" },
     { label: "Applied", value: "applied" },
@@ -75,7 +106,7 @@ export default function JobsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Header section with page title, total counts, and action button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-sky-blue-50 p-2 rounded-lg">
@@ -95,9 +126,10 @@ export default function JobsPage() {
         </div>
       </div>
 
-      {/* Filter Tabs */}
+      {/* Filter Tabs for quick views */}
       <div className="flex gap-2 flex-wrap">
         {filterTabs.map((tab) => {
+          // Calculate the count of applications within this specific tab filter
           const count =
             tab.value === "all"
               ? jobs.length
@@ -127,7 +159,7 @@ export default function JobsPage() {
         })}
       </div>
 
-      {/* Loading */}
+      {/* Main content table or loading state */}
       {loading ? (
         <div className="bg-white rounded-xl border p-12 text-center">
           <p className="text-gray-400 text-sm">Loading jobs...</p>
