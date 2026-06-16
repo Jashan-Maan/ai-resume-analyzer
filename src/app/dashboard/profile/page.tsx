@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import SignOutButton from "@/components/dashboard/SignOutButton";
 
+// ProfilePage Component
 export default async function ProfilePage() {
   const session = await auth();
   if (!session) redirect("/login");
@@ -100,6 +101,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="space-y-6 max-w-4xl">
+// Header section with page title and sign out button
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="bg-violet-50 p-2 rounded-lg">
@@ -113,6 +115,7 @@ export default async function ProfilePage() {
         </div>
       </div>
 
+// Profile Card displaying avatar, name, and contact info
       {/* Profile Card */}
       <Card>
         <CardContent className="p-6">
@@ -171,6 +174,7 @@ export default async function ProfilePage() {
         </CardContent>
       </Card>
 
+// Stats Grid showing career statistics
       {/* Stats Grid */}
       <div>
         <h3 className="text-base font-semibold text-gray-800 mb-3">
@@ -202,6 +206,7 @@ export default async function ProfilePage() {
         </div>
       </div>
 
+// Job Application Breakdown section
       {/* Job Application Breakdown */}
       {jobs.length > 0 && (
         <Card>
@@ -300,6 +305,7 @@ export default async function ProfilePage() {
         </Card>
       )}
 
+// ATS Score Summary section
       {/* ATS Score Summary */}
       {analyses.length > 0 && (
         <Card>
