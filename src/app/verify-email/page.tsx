@@ -5,19 +5,26 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+// Verify email form component
 function VerifyEmailForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
 
+  // State for OTP digits
   const [code, setCode] = useState(["", "", "", "", "", ""]);
+  // Loading flag for verification request
   const [loading, setLoading] = useState(false);
+  // Error message for UI feedback
   const [error, setError] = useState("");
+  // Flag indicating resend request in progress
   const [resending, setResending] = useState(false);
+  // Refs for each OTP input element
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
   const [resendLoading, setResendLoading] = useState(false);
   const [resendMessage, setResendMessage] = useState("");
 
+  // Resend verification code to the user's email
   const handleResend = async () => {
     setResendLoading(true);
     setResendMessage("");
@@ -46,6 +53,7 @@ function VerifyEmailForm() {
   }, []);
 
   // Handle OTP input
+  // Update OTP digit at a specific index
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return; // only numbers
 
@@ -60,6 +68,7 @@ function VerifyEmailForm() {
   };
 
   // Handle backspace
+  // Handle backspace navigation between inputs
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !code[index] && index > 0) {
       inputs.current[index - 1]?.focus();
@@ -67,6 +76,7 @@ function VerifyEmailForm() {
   };
 
   // Handle paste
+  // Support pasting the full OTP code
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pasted = e.clipboardData.getData("text").slice(0, 6);
@@ -80,6 +90,7 @@ function VerifyEmailForm() {
     inputs.current[Math.min(pasted.length, 5)]?.focus();
   };
 
+  // Submit the OTP to the backend for verification
   const handleVerify = async () => {
     const fullCode = code.join("");
     if (fullCode.length !== 6) {
@@ -117,6 +128,7 @@ function VerifyEmailForm() {
     }
   };
 
+  // Render the verification UI
   return (
     <div className="bg-white p-8 rounded-2xl shadow-sm border w-full max-w-md text-center">
       {/* Icon */}
@@ -126,7 +138,7 @@ function VerifyEmailForm() {
       <p className="text-gray-500 text-sm mb-1">We sent a 6-digit code to</p>
       <p className="text-sky-blue-600 font-medium text-sm mb-6">{email}</p>
 
-      {/* OTP Input */}
+      {/* OTP input fields */}
       <div className="flex gap-3 justify-center mb-6">
         {code.map((digit, i) => (
           <input
@@ -152,6 +164,7 @@ function VerifyEmailForm() {
         </div>
       )}
 
+      {/* Verify button */}
       <Button
         onClick={handleVerify}
         disabled={loading || code.join("").length !== 6}
@@ -168,6 +181,7 @@ function VerifyEmailForm() {
       </Button>
 
       <p className="text-xs text-gray-400">Code expires in 10 minutes</p>
+      {/* Resend verification code section */}
       <div className="mt-4">
         <p className="text-xs text-gray-400 mb-2">Didn't receive the code?</p>
         <button
@@ -193,6 +207,7 @@ function VerifyEmailForm() {
 }
 
 // 2. Wrap the form in a Suspense boundary in the main Page component
+// Main page component with Suspense wrapper
 export default function VerifyEmailPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
