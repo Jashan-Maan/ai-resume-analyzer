@@ -1,15 +1,32 @@
+/* ============================================================
+   Core CSS imports
+   - tailwindcss: utility classes
+   - tw-animate-css: animation utilities
+   - shadcn/tailwind.css: shadcn/ui base styles
+   ============================================================ */
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Enable dark mode variant scoped to elements with the .dark class */
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================================
+   @theme inline — maps CSS custom properties to Tailwind tokens
+   so design tokens are usable as Tailwind utility classes
+   (e.g. bg-primary, text-foreground, border-border, etc.)
+   ============================================================ */
 @theme inline {
+  /* Base surface colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Typography */
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+
+  /* Sidebar-specific color tokens */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -18,27 +35,43 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+
+  /* Chart palette tokens (5 shades) */
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+
+  /* Interactive / form tokens */
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+
+  /* Accent & muted surface tokens */
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
+
+  /* Secondary surface tokens */
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
+
+  /* Primary brand tokens */
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+
+  /* Popover tokens */
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
+
+  /* Card tokens */
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
+  /* Border-radius scale — derived from the base --radius value */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -46,44 +79,72 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Sky-blue custom color palette (50–950 scale)
+     Used as the primary brand color throughout the app */
   --color-sky-blue-50: #e5f5ff;
   --color-sky-blue-100: #ccebff;
   --color-sky-blue-200: #99d6ff;
   --color-sky-blue-300: #66c2ff;
   --color-sky-blue-400: #33adff;
   --color-sky-blue-500: #0099ff;
-  --color-sky-blue-600: #007acc;
+  --color-sky-blue-600: #007acc;  /* Default brand color */
   --color-sky-blue-700: #005c99;
   --color-sky-blue-800: #003d66;
   --color-sky-blue-900: #001f33;
   --color-sky-blue-950: #001524;
 }
 
+/* ============================================================
+   :root — Light mode design tokens
+   These variables power all Tailwind color utilities in light mode
+   ============================================================ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: #001524;
+  /* Base surfaces */
+  --background: oklch(1 0 0);       /* White page background */
+  --foreground: #001524;            /* Near-black text */
+
+  /* Card & popover surfaces */
   --card: oklch(1 0 0);
   --card-foreground: #001524;
   --popover: oklch(1 0 0);
   --popover-foreground: #001524;
-  --primary: #007acc;
+
+  /* Brand / primary color */
+  --primary: #007acc;               /* Sky blue 600 */
   --primary-foreground: #ffffff;
-  --secondary: #e5f5ff;
-  --secondary-foreground: #003d66;
+
+  /* Secondary surfaces */
+  --secondary: #e5f5ff;             /* Sky blue 50 */
+  --secondary-foreground: #003d66;  /* Sky blue 800 */
+
+  /* Muted / subdued surfaces */
   --muted: #e5f5ff;
-  --muted-foreground: #005c99;
+  --muted-foreground: #005c99;      /* Sky blue 700 */
+
+  /* Accent (highlight) surfaces */
   --accent: #e5f5ff;
   --accent-foreground: #007acc;
+
+  /* Destructive / error color */
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #ccebff;
+
+  /* Border, input & focus ring */
+  --border: #ccebff;                /* Sky blue 100 */
   --input: #ccebff;
-  --ring: #66c2ff;
+  --ring: #66c2ff;                  /* Sky blue 300 */
+
+  /* Chart color palette (light mode) — blue gradient */
   --chart-1: #0099ff;
   --chart-2: #007acc;
   --chart-3: #005c99;
   --chart-4: #003d66;
   --chart-5: #001f33;
+
+  /* Base border-radius (all radius scales derive from this) */
   --radius: 0.625rem;
+
+  /* Sidebar-specific tokens (light mode) */
   --sidebar: #ffffff;
   --sidebar-foreground: #001524;
   --sidebar-primary: #007acc;
@@ -94,30 +155,54 @@
   --sidebar-ring: #66c2ff;
 }
 
+/* ============================================================
+   .dark — Dark mode overrides
+   Applied when the <html> element has the "dark" class.
+   Colors shift to deep navy backgrounds with lighter blue text.
+   ============================================================ */
 .dark {
-  --background: #001524;
-  --foreground: #e5f5ff;
+  /* Base surfaces */
+  --background: #001524;            /* Darkest navy */
+  --foreground: #e5f5ff;            /* Light sky blue text */
+
+  /* Card & popover surfaces */
   --card: #001f33;
   --card-foreground: #e5f5ff;
   --popover: #001f33;
   --popover-foreground: #e5f5ff;
-  --primary: #0099ff;
+
+  /* Brand / primary color (brighter for dark bg) */
+  --primary: #0099ff;               /* Sky blue 500 */
   --primary-foreground: #001524;
-  --secondary: #003d66;
+
+  /* Secondary surfaces */
+  --secondary: #003d66;             /* Sky blue 800 */
   --secondary-foreground: #e5f5ff;
+
+  /* Muted / subdued surfaces */
   --muted: #003d66;
-  --muted-foreground: #99d6ff;
+  --muted-foreground: #99d6ff;      /* Sky blue 200 */
+
+  /* Accent surfaces */
   --accent: #003d66;
   --accent-foreground: #e5f5ff;
+
+  /* Destructive / error color (slightly lighter for dark bg) */
   --destructive: oklch(0.704 0.191 22.216);
+
+  /* Border, input & focus ring */
   --border: #003d66;
   --input: #003d66;
-  --ring: #33adff;
+  --ring: #33adff;                  /* Sky blue 400 */
+
+  /* Chart color palette (dark mode) — light blue gradient */
   --chart-1: #33adff;
   --chart-2: #66c2ff;
   --chart-3: #99d6ff;
   --chart-4: #ccebff;
   --chart-5: #e5f5ff;
+
+  /* Sidebar-specific tokens (dark mode) */
   --sidebar: #001f33;
   --sidebar-foreground: #e5f5ff;
   --sidebar-primary: #0099ff;
@@ -128,13 +213,21 @@
   --sidebar-ring: #33adff;
 }
 
+/* ============================================================
+   @layer base — Global element defaults
+   Applied at the lowest specificity layer so they can be
+   easily overridden by component or utility styles.
+   ============================================================ */
 @layer base {
+  /* Apply border color and focus ring to all elements */
   * {
     @apply border-border outline-ring/50;
   }
+  /* Set default background and text color on the body */
   body {
     @apply bg-background text-foreground;
   }
+  /* Apply sans-serif font across the whole document */
   html {
     @apply font-sans;
   }
