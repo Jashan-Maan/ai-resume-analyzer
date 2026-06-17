@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
+// Signup page component
 export default function SignupPage() {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -22,6 +23,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
+    // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -54,7 +56,8 @@ export default function SignupPage() {
     }
   };
 
-  return (
+    // Render signup form UI
+    return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded-2xl shadow-sm border w-full max-w-md">
         {/* Logo */}
@@ -146,6 +149,7 @@ export default function SignupPage() {
             </div>
           </div>
 
+          // OAuth sign‑in options
           {/* OAuth */}
           <div className="grid grid-cols-2 gap-3">
             <button
@@ -167,7 +171,8 @@ export default function SignupPage() {
           </div>
 
           <p className="text-center text-sm text-gray-500">
-            Already have an account?{" "}
+            // Link to login page for existing users
+            {/* Already have an account? */}{" "}
             <Link
               href="/login"
               className="text-sky-blue-600 hover:underline font-medium"
