@@ -38,13 +38,28 @@ export const scaleIn: Variants = {
 export default function Home() {
   return (
     <div className="min-h-screen bg-white overflow-hidden">
+      {/* Navbar - Navigation bar for the website */}
       <Navbar />
+
+      {/* Hero - Main landing section with headline and CTA */}
       <Hero />
+
+      {/* Stats Bar  - Key statistics about the service */}
       <StatsBar />
+
+      {/* Features - Features of the service */}
       <Features />
+
+      {/* How It Works  - How the service works */}
       <HowItWorks />
+
+      {/* Testimonials  - Testimonials of the service */}
       <Testimonials />
+
+      {/* Call To Action  - Call to action section */}
       <CallToAction />
+
+      {/* Footer  - Footer of the website */}
       <Footer />
     </div>
   );
