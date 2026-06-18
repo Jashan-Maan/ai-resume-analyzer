@@ -10,11 +10,13 @@ import {
   Target,
 } from "lucide-react";
 
+/** Suggestion represents a recommendation with a priority level. */
 interface Suggestion {
   priority: "high" | "medium" | "low";
   suggestion: string;
 }
 
+/** SectionsFound indicates which resume sections were detected in the analysis. */
 interface SectionsFound {
   experience: boolean;
   education: boolean;
@@ -23,6 +25,7 @@ interface SectionsFound {
   summary: boolean;
 }
 
+/** AnalysisData aggregates all analysis results for a resume. */
 interface AnalysisData {
   atsScore: number;
   summary: string;
@@ -33,10 +36,12 @@ interface AnalysisData {
   sectionsFound: SectionsFound;
 }
 
+/** Props for the AnalysisResult component. */
 interface AnalysisResultProps {
   data: AnalysisData;
 }
 
+/** Returns color and label config based on ATS score. */
 function getScoreColor(score: number) {
   if (score >= 80)
     return { text: "text-green-600", bg: "bg-green-50", label: "Excellent" };
@@ -47,6 +52,7 @@ function getScoreColor(score: number) {
   return { text: "text-red-600", bg: "bg-red-50", label: "Poor" };
 }
 
+/** Returns CSS classes for suggestion priority badges. */
 function getPriorityColor(priority: string) {
   if (priority === "high") return "bg-red-50 text-red-600 border-red-200";
   if (priority === "medium")
@@ -54,6 +60,7 @@ function getPriorityColor(priority: string) {
   return "bg-green-50 text-green-600 border-green-200";
 }
 
+/** Renders detailed analysis result including score, strengths, weaknesses, and suggestions. */
 export default function AnalysisResult({ data }: AnalysisResultProps) {
   const scoreConfig = getScoreColor(data.atsScore);
 
