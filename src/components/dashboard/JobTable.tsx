@@ -29,6 +29,9 @@ import StatusBadge from "./StatusBadge";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
+/**
+ * Representation of a tracked job application.
+ */
 interface Job {
   _id: string;
   company: string;
@@ -38,30 +41,51 @@ interface Job {
   note?: string;
 }
 
+/**
+ * Properties expected by the JobTable component.
+ */
 interface JobTableProps {
+  /** Array of job applications to display in the table. */
   jobs: Job[];
+  /** Parent callback triggered after a job is successfully deleted from the database. */
   onDelete: (id: string) => void;
+  /** Parent callback triggered when a job's application status is changed. */
   onStatusChange: (id: string, status: string) => void;
+  /** Parent callback triggered when a job's details are edited and saved. */
   onEdit: (id: string, data: Partial<Job>) => void;
 }
 
+/**
+ * JobTable renders a list of tracked job applications in a tabular format.
+ * It provides interactive controls to update the status, edit details via a modal form,
+ * or delete an application, syncing changes with the API.
+ */
 export default function JobTable({
   jobs,
   onDelete,
   onStatusChange,
   onEdit,
 }: JobTableProps) {
+  // Tracks the ID of the job currently being deleted to show a loading/disabled state
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  
+  // Tracks the job object that is currently being edited in the modal
   const [editingJob, setEditingJob] = useState<Job | null>(null);
+  
+  // Local form state for editing job fields
   const [editForm, setEditForm] = useState({
     company: "",
     role: "",
     status: "",
     note: "",
   });
+  
+  // Tracks the loading state during the API request for saving edits
   const [editLoading, setEditLoading] = useState(false);
 
-  // Delete handler
+  /**
+   * Triggers a DELETE request to remove the specified job application.
+   */
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this job application?")) return;
     setDeletingId(id);
@@ -81,7 +105,9 @@ export default function JobTable({
     }
   };
 
-  // Status change handler
+  /**
+   * Triggers a PUT request to update the application status of a job.
+   */
   const handleStatusChange = async (id: string, status: string) => {
     try {
       const res = await fetch(`/api/jobs/${id}`, {
@@ -96,7 +122,9 @@ export default function JobTable({
     }
   };
 
-  // Open edit modal
+  /**
+   * Populates the local form state and opens the Edit Modal for a given job.
+   */
   const handleEditOpen = (job: Job) => {
     setEditingJob(job);
     setEditForm({
@@ -107,7 +135,9 @@ export default function JobTable({
     });
   };
 
-  // Submit edit
+  /**
+   * Handles submission of the edit form, making a PUT request and updating parent state on success.
+   */
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingJob) return;
@@ -137,6 +167,7 @@ export default function JobTable({
     }
   };
 
+  // Render fallback empty state if no jobs have been added yet
   if (jobs.length === 0) {
     return (
       <div className="text-center py-16 bg-white rounded-xl border">
@@ -153,6 +184,7 @@ export default function JobTable({
 
   return (
     <>
+      {/* Scrollable table container */}
       <div className="bg-white rounded-xl border overflow-hidden">
         <div className="overflow-x-auto w-full">
           <Table>
@@ -184,7 +216,7 @@ export default function JobTable({
                   <TableCell className="font-medium">{job.company}</TableCell>
                   <TableCell className="text-gray-600">{job.role}</TableCell>
 
-                  {/* Status — Shadcn Select ✅ */}
+                  {/* Status Badge component displays colored badge matching application state */}
                   <TableCell>
                     <StatusBadge status={job.status} />
                   </TableCell>
@@ -196,9 +228,9 @@ export default function JobTable({
                     {job.note || "—"}
                   </TableCell>
 
-                  {/* Actions */}
+                  {/* Action buttons (Edit & Delete) */}
                   <TableCell className="flex gap-1">
-                    {/* Edit ✅ */}
+                    {/* Edit button triggers the edit dialog pop-up */}
                     <Button
                       variant="ghost"
                       size="sm"
@@ -208,7 +240,7 @@ export default function JobTable({
                       <Pencil size={15} />
                     </Button>
 
-                    {/* Delete ✅ */}
+                    {/* Delete button triggers confirmation and handleDelete API callback */}
                     <Button
                       variant="ghost"
                       size="sm"
@@ -226,7 +258,7 @@ export default function JobTable({
         </div>
       </div>
 
-      {/* Edit Modal */}
+      {/* Edit Job Modal Dialog overlay */}
       <Dialog open={!!editingJob} onOpenChange={() => setEditingJob(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
