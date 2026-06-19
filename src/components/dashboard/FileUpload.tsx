@@ -3,20 +3,37 @@
 import React, { useState, useRef } from "react";
 import { Upload, FileText, X } from "lucide-react";
 
+/**
+ * Properties for the FileUpload component.
+ */
 interface FileUploadProps {
+  /** Callback fired when a valid PDF file is selected. */
   onFileSelect: (file: File) => void;
+  /** Currently selected file, or null if no file is chosen yet. */
   selectedFile: File | null;
+  /** Callback fired to clear the selected file and reset the uploader. */
   onClear: () => void;
 }
 
+/**
+ * FileUpload component provides a drag-and-drop area for uploading PDF resumes.
+ * It also supports opening the native file browser when clicked.
+ */
 export default function FileUpload({
   onFileSelect,
   selectedFile,
   onClear,
 }: FileUploadProps) {
+  // State to track whether a file is currently being dragged over the upload area
   const [isDragging, setIsDragging] = useState(false);
+  
+  // Reference to the hidden file input element to trigger it programmatically
   const inputRef = useRef<HTMLInputElement>(null);
 
+  /**
+   * Handles dropping a file onto the target area.
+   * Only accepts the file if it is a PDF.
+   */
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
@@ -27,11 +44,15 @@ export default function FileUpload({
     }
   };
 
+  /**
+   * Handles changes to the hidden file input (triggered via click-to-browse).
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) onFileSelect(file);
   };
 
+  // If a file is already selected, render a preview of the file with a clear/remove button
   if (selectedFile) {
     return (
       <div className="border-2 border-sky-blue-200 bg-sky-blue-50 rounded-xl p-6 flex items-center justify-between">
@@ -51,6 +72,7 @@ export default function FileUpload({
         <button
           onClick={onClear}
           className="text-gray-400 hover:text-red-500 transition p-1"
+          aria-label="Remove selected file"
         >
           <X size={18} />
         </button>
@@ -58,6 +80,7 @@ export default function FileUpload({
     );
   }
 
+  // Otherwise, render the drag-and-drop file upload target zone
   return (
     <div
       onClick={() => inputRef.current?.click()}
