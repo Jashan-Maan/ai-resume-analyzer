@@ -4,32 +4,51 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Code, Heart, FolderGit2, ChevronDown, ChevronUp } from "lucide-react";
 
+/**
+ * Representation of a technical interview question.
+ */
 interface TechnicalQuestion {
   question: string;
   difficulty: "easy" | "medium" | "hard";
   topic: string;
 }
 
+/**
+ * Representation of a behavioral interview question with answering tips.
+ */
 interface BehavioralQuestion {
   question: string;
   tip: string;
 }
 
+/**
+ * Representation of a question focused on a specific project from the user's resume.
+ */
 interface ProjectQuestion {
   question: string;
   project: string;
 }
 
+/**
+ * Complete set of generated questions broken down by category.
+ */
 interface InterviewData {
   technical: TechnicalQuestion[];
   behavioral: BehavioralQuestion[];
   projectBased: ProjectQuestion[];
 }
 
+/**
+ * Properties for the InterviewResult component.
+ */
 interface InterviewResultProps {
   data: InterviewData;
 }
 
+/**
+ * Resolves style configuration classes based on the difficulty level of a question.
+ * @param difficulty - The difficulty level string ('easy', 'medium', or 'hard').
+ */
 function getDifficultyConfig(difficulty: string) {
   if (difficulty === "easy")
     return {
@@ -46,7 +65,9 @@ function getDifficultyConfig(difficulty: string) {
   return { color: "text-red-600", bg: "bg-red-50", border: "border-red-200" };
 }
 
-// Single expandable question card
+/**
+ * A single expandable card component used to display a question and its details/tips.
+ */
 function QuestionCard({
   number,
   question,
@@ -56,6 +77,7 @@ function QuestionCard({
   question: string;
   children: React.ReactNode;
 }) {
+  // Toggle state to control accordion expansion
   const [open, setOpen] = useState(false);
 
   return (
@@ -76,6 +98,7 @@ function QuestionCard({
           <ChevronDown size={16} className="text-gray-400 shrink-0 mt-0.5" />
         )}
       </button>
+      {/* Expandable region rendered only when 'open' is true */}
       {open && (
         <div className="px-4 pb-4 pt-0 bg-gray-50 border-t">{children}</div>
       )}
@@ -83,10 +106,14 @@ function QuestionCard({
   );
 }
 
+/**
+ * InterviewResult displays the tailored interview questions generated from the analyzed resume.
+ * It segments them into Technical, Behavioral, and Project-based categories with stats counters.
+ */
 export default function InterviewResult({ data }: InterviewResultProps) {
   return (
     <div className="space-y-6">
-      {/* Summary Bar */}
+      {/* Summary statistics grid showcasing count for each category */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-blue-50 rounded-xl p-4 text-center">
           <p className="text-2xl font-bold text-blue-600">
@@ -108,7 +135,7 @@ export default function InterviewResult({ data }: InterviewResultProps) {
         </div>
       </div>
 
-      {/* Technical Questions */}
+      {/* Section: Technical Questions */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2 text-blue-600">
@@ -141,7 +168,7 @@ export default function InterviewResult({ data }: InterviewResultProps) {
         </CardContent>
       </Card>
 
-      {/* Behavioral Questions */}
+      {/* Section: Behavioral Questions */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2 text-green-600">
@@ -166,7 +193,7 @@ export default function InterviewResult({ data }: InterviewResultProps) {
         </CardContent>
       </Card>
 
-      {/* Project Based Questions */}
+      {/* Section: Project Based Questions */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2 text-sky-blue-600">
