@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -14,6 +15,10 @@ import {
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
+/**
+ * List of navigation links to display in the sidebar.
+ * Each link has a href destination, a display label, and a Lucide icon component.
+ */
 const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/analyze", label: "Analyze Resume", icon: FileSearch },
@@ -27,26 +32,36 @@ const navLinks = [
   { href: "/dashboard/profile", label: "Profile", icon: User },
 ];
 
+/**
+ * Props expected by the Sidebar component.
+ */
 interface SidebarProps {
+  /** The currently authenticated user's session data */
   user: {
     name?: string | null;
     email?: string | null;
     image?: string | null;
   };
+  /** Optional callback to close the sidebar (used on mobile devices) */
   onClose?: () => void;
 }
 
+/**
+ * Sidebar component that provides navigation, user profile information, and sign-out functionality.
+ */
 const Sidebar = ({ user, onClose }: SidebarProps) => {
+  // Hook to get the active route path to highlight the corresponding navigation item
   const pathname = usePathname();
 
   return (
     <div className="w-64 bg-white border-r flex flex-col h-full shrink-0">
-      {/* Logo */}
+      {/* Logo and Application Branding Header */}
       <div className="p-6 border-b flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-sky-blue-600">Kira</h1>
           <p className="text-xs text-gray-400 mt-0.5">AI Resume Analyzer</p>
         </div>
+        {/* Mobile close button: visible only on small screens when onClose is provided */}
         {onClose && (
           <button
             onClick={onClose}
@@ -58,7 +73,7 @@ const Sidebar = ({ user, onClose }: SidebarProps) => {
         )}
       </div>
 
-      {/* User Info */}
+      {/* User Info Section: Displays user avatar/initials, name, and email */}
       <div className="p-4 border-b">
         <div className="flex items-center gap-3">
           {user.image ? (
@@ -70,7 +85,7 @@ const Sidebar = ({ user, onClose }: SidebarProps) => {
               className="rounded-full ring-2 ring-sky-blue-100"
             />
           ) : (
-            // Fallback avatar if no image
+            // Fallback avatar displaying user's first initial if no image is present
             <div className="w-10 h-10 rounded-full bg-sky-blue-100 flex items-center justify-center">
               <span className="text-sky-blue-600 font-semibold text-sm">
                 {user.name?.charAt(0).toUpperCase()}
@@ -86,9 +101,10 @@ const Sidebar = ({ user, onClose }: SidebarProps) => {
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Main Navigation Links List */}
       <nav className="flex-1 p-3 flex flex-col gap-1 overflow-y-auto">
         {navLinks.map(({ href, label, icon: Icon }) => {
+          // Check if current route matches this link's destination
           const isActive = pathname === href;
           return (
             <Link
@@ -112,7 +128,7 @@ const Sidebar = ({ user, onClose }: SidebarProps) => {
         })}
       </nav>
 
-      {/* Logout */}
+      {/* Logout Action Area at the bottom of the sidebar */}
       <div className="p-3 border-t">
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
@@ -127,3 +143,4 @@ const Sidebar = ({ user, onClose }: SidebarProps) => {
 };
 
 export default Sidebar;
+
