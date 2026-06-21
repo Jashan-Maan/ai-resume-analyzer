@@ -9,6 +9,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+/**
+ * Props expected by the StatusChart component.
+ * Contains the count for each of the job application statuses.
+ */
 interface StatusChartProps {
   data: {
     applied: number;
@@ -18,6 +22,10 @@ interface StatusChartProps {
   };
 }
 
+/**
+ * Color palette configuration for each job application status,
+ * matching standard Tailwind theme tones.
+ */
 const COLORS = {
   applied: "#0099ff", // sky-blue-500
   interview: "#f59e0b", // amber
@@ -25,7 +33,12 @@ const COLORS = {
   rejected: "#ef4444", // red
 };
 
+/**
+ * Renders a responsive visual Pie/Donut Chart breakdown of application statuses
+ * using recharts. Only items with counts greater than 0 are rendered.
+ */
 export default function StatusChart({ data }: StatusChartProps) {
+  // Format data for Recharts, filtering out categories with no applications
   const chartData = [
     { name: "Applied", value: data.applied, color: COLORS.applied },
     { name: "Interview", value: data.interview, color: COLORS.interview },
@@ -33,8 +46,10 @@ export default function StatusChart({ data }: StatusChartProps) {
     { name: "Rejected", value: data.rejected, color: COLORS.rejected },
   ].filter((item) => item.value > 0); // only show non-zero
 
+  // Calculate the total number of applications to compute percentages
   const total = chartData.reduce((sum, item) => sum + item.value, 0);
 
+  // Fallback UI when there are no applications in the system
   if (total === 0) {
     return (
       <div className="flex items-center justify-center h-48 text-gray-400 text-sm">
@@ -56,10 +71,12 @@ export default function StatusChart({ data }: StatusChartProps) {
           dataKey="value"
           strokeWidth={0}
         >
+          {/* Map each data item to a custom cell colored by its category */}
           {chartData.map((entry, index) => (
             <Cell key={index} fill={entry.color} />
           ))}
         </Pie>
+        {/* Custom tooltip displaying both count and rounded percentage breakdown */}
         <Tooltip
           cursor={{ stroke: "transparent" }}
           content={({ active, payload }) => {
@@ -83,3 +100,4 @@ export default function StatusChart({ data }: StatusChartProps) {
     </ResponsiveContainer>
   );
 }
+
