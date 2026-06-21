@@ -1,9 +1,17 @@
 import { Badge } from "@/components/ui/badge";
 
+/**
+ * Props for the StatusBadge component.
+ * @property status - The job application status, which determines the badge's visual styling.
+ */
 interface StatusBadgeProps {
   status: "applied" | "interview" | "offer" | "rejected";
 }
 
+/**
+ * Configuration mapping for each status type, defining the display label
+ * and Tailwind CSS classes for badges (background, text, border, and hover state).
+ */
 const statusConfig = {
   applied: {
     label: "Applied",
@@ -24,6 +32,10 @@ const statusConfig = {
   },
 };
 
+/**
+ * A responsive status badge component that displays the application status
+ * with themed color styling according to the current status.
+ */
 export default function StatusBadge({ status }: StatusBadgeProps) {
   const config = statusConfig[status];
   return (
@@ -35,3 +47,4 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
     </Badge>
   );
 }
+
